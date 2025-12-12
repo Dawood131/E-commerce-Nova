@@ -7,7 +7,7 @@ import visa from "../../../public/products/visa.png";
 import mastercard from "../../../public/products/mastercard.jpg";
 import paypal from "../../../public/products/paypal.jpg";
 import ssl from "../../../public/products/secure.gif";
-import MainBtn from "../Button/mainBtn";
+import MainBtn from "../Button/MainBtn";
 
 const Footer = () => {
     const scrollToTop = () => {
