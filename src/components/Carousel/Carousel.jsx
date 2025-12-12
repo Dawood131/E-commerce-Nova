@@ -4,7 +4,7 @@ import allImg from "../../../public/products/all.jpg";
 import manImg from "../../../public/products/man.jpg";
 import womanImg from "../../../public/products/woman.jpg";
 import kidsImg from "../../../public/products/p_img38.png";
-import MainBtn from "../Button/mainBtn";
+import MainBtn from "../Button/MainBtn";
 
 const slides = [
   { image: allImg, title: "New Collection 2025", subtitle: "A bold step into the future of fashion — redefine your look today with our latest styles.", btn: "Shop Collection", path: "/collection" },
