@@ -1,10 +1,12 @@
 import React from 'react'
-import Navbar from '../components/Layout/Navbar'
+import Header from '../components/Header.jsx/Header'
+import Footer from '../components/Layout/Footer'
 
 const Search = () => {
   return (
     <div>
-        <Navbar />
+       <Header />
+       <Footer />
     </div>
   )
 }

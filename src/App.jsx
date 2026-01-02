@@ -11,6 +11,7 @@ import PlaceOrder from './Pages/PlaceOrder'
 import Products from './Pages/Products'
 import Search from './Pages/Search';
 import Login from './Auth/Login';
+import TrackOrder from './Pages/TrackOrder'
 
 const App = () => {
     return (
@@ -27,6 +28,7 @@ const App = () => {
                 <Route path='/place-order' element={<PlaceOrder />} />
                 <Route path='/products' element={<Products />} />
                 <Route path='/login' element={<Login />} />
+                <Route path='/trackorder' element={<TrackOrder />} />
             </Routes>
         </div>
     );

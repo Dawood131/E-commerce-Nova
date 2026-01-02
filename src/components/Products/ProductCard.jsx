@@ -37,13 +37,13 @@ const ProductCard = ({ product }) => {
   };
   
   return (
-    <div className="group relative cursor-pointer w-full">
+    <div className="group relative w-full">
       {/* Image */}
       <div className="relative overflow-hidden rounded-md">
         <img
           src={image}
           alt={product.name}
-          className=" w-full  h-[220px] sm:h-[250px] md:h-[280px] lg:h-[380px] object-cover  transition-all duration-500  group-hover:scale-105"
+          className=" w-full  h-[220px] sm:h-[250px] md:h-[280px] lg:h-[380px] object-cover  transition-all duration-500  group-hover:scale-105 cursor-pointer"
           loading="lazy"
         />
 
@@ -82,11 +82,11 @@ const ProductCard = ({ product }) => {
       <div className="mt-3">
         {/* Tags */}
         {product.tags && (
-          <p className="text-[12px] text-gray-500">{product.tags}</p>
+          <p className="text-[12px] text-gray-500 cursor-pointer">{product.tags}</p>
         )}
 
         {/* Title */}
-        <h2 className="text-[14px] font-medium mt-1 leading-tight">{product.name}</h2>
+        <h2 className="text-[14px] font-medium mt-1 leading-tight cursor-pointer">{product.name}</h2>
 
         {/* Price */}
         <div className="mt-1 flex items-center gap-2">

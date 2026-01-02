@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import ProductCard from "../components/Products/ProductCard";
 import productsData from "../components/data/products";
-import Navbar from "../components/Layout/Navbar";
+import Header from "../components/Header.jsx/Header";
 
 const CartPage = () => {
   const cart = useSelector(state => state.cart.items);
@@ -13,7 +13,7 @@ const CartPage = () => {
 
   return (
     <div>
-      <Navbar />
+      <Header />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
         {cartProducts.map(product => (
           <ProductCard key={product.id} product={product} />

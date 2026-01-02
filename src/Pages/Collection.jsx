@@ -1,11 +1,11 @@
 import React from 'react'
-import Navbar from '../components/Layout/Navbar'
 import Footer from '../components/Layout/Footer'
+import Header from '../components/Header.jsx/Header'
 
 const Collection = () => {
   return (
     <div>
-      <Navbar />
+      <Header />
       <Footer />
     </div>
   )

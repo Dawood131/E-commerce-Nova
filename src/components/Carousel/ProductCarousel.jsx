@@ -10,7 +10,7 @@ const ProductCarousel = ({ products }) => {
   const [slideIndex, setSlideIndex] = useState(0);
   const [dotsCount, setDotsCount] = useState(products.length);
   const [scrollStep, setScrollStep] = useState(1); // desktop: 1, mobile: 2 etc
-
+  const autoSlideRef = useRef(null);
   const doubledProducts = [...products, ...products]; // for infinite scroll
 
   // -------------------
@@ -33,7 +33,7 @@ const ProductCarousel = ({ products }) => {
       setDotsCount(Math.ceil(products.length / 3));
     } else {
       setCardsPerView(2);
-      setScrollStep(2); // mobile: 2 cards scroll at a time
+      setScrollStep(1); // mobile: 1 card swipe at a time
       setDotsCount(Math.ceil(products.length / 2));
     }
   };
@@ -42,8 +42,7 @@ const ProductCarousel = ({ products }) => {
     updateBreakpoints();
     window.addEventListener("resize", updateBreakpoints);
     return () => window.removeEventListener("resize", updateBreakpoints);
-  }, [updateBreakpoints]); // added dependency
-
+  }, [updateBreakpoints]);
 
   // -------------------
   // Slide function
@@ -78,7 +77,7 @@ const ProductCarousel = ({ products }) => {
   };
 
   // -------------------
-  // Prev (optional)
+  // Prev (infinite)
   // -------------------
   const prev = () => {
     let newIndex = slideIndex - scrollStep;
@@ -102,10 +101,22 @@ const ProductCarousel = ({ products }) => {
   // -------------------
   // Auto slide
   // -------------------
+  const startAutoSlide = () => {
+    if (autoSlideRef.current) return;
+    autoSlideRef.current = setInterval(() => {
+      next();
+    }, 3000);
+  };
+
+  const stopAutoSlide = () => {
+    clearInterval(autoSlideRef.current);
+    autoSlideRef.current = null;
+  };
+
   useEffect(() => {
-    const auto = setInterval(next, 3000);
-    return () => clearInterval(auto);
-  }, [next, slideIndex, scrollStep]);
+    startAutoSlide();
+    return () => stopAutoSlide();
+  }, [slideIndex, scrollStep]);
 
 
   // -------------------
@@ -116,11 +127,62 @@ const ProductCarousel = ({ products }) => {
     return Math.floor(slideIndex / scrollStep);
   };
 
+  // -------------------
+  // Mobile Swipe
+  // -------------------
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let startX = 0;
+    let isDragging = false;
+
+    const touchStart = (e) => {
+      startX = e.touches[0].clientX;
+      isDragging = true;
+    };
+
+    const touchMove = (e) => {
+      if (!isDragging) return;
+      const moveX = e.touches[0].clientX;
+      const diff = startX - moveX;
+
+      // threshold to swipe
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          next();
+        } else {
+          prev();
+        }
+        isDragging = false;
+      }
+    };
+
+    const touchEnd = () => {
+      isDragging = false;
+    };
+
+    track.addEventListener("touchstart", touchStart);
+    track.addEventListener("touchmove", touchMove);
+    track.addEventListener("touchend", touchEnd);
+
+    return () => {
+      track.removeEventListener("touchstart", touchStart);
+      track.removeEventListener("touchmove", touchMove);
+      track.removeEventListener("touchend", touchEnd);
+    };
+  }, [slideIndex, scrollStep]);
+
   return (
-    <div className="relative w-full py-10 overflow-hidden px-4 md:px-6 lg:px-10">
+    <div
+      className="relative w-full py-10 overflow-hidden px-4 md:px-6 lg:px-10"
+      onMouseEnter={stopAutoSlide}
+      onMouseLeave={startAutoSlide}
+    >
       <div className="mb-15">
         <Headings highlight="Best" heading="Sellers" />
       </div>
+
       {/* Buttons */}
       <button
         onClick={prev}

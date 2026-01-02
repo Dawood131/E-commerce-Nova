@@ -4,7 +4,7 @@ import allImg from "../../../public/products/all.jpg";
 import manImg from "../../../public/products/man.jpg";
 import womanImg from "../../../public/products/woman.jpg";
 import kidsImg from "../../../public/products/p_img38.png";
-import MainBtn from "../Button/mainBtn";
+import MainBtn from "../Button/MainBtn";
 
 const slides = [
   { image: allImg, title: "New Collection 2025", subtitle: "A bold step into the future of fashion — redefine your look today with our latest styles.", btn: "Shop Collection", path: "/collection" },
@@ -30,7 +30,7 @@ const NovaShowcaseCarousel = () => {
       <div className="max-w-6xl mx-auto relative flex items-center justify-center">
 
         {/* Slides */}
-        <div className="relative min-h-[480px] w-full">
+        <div className="relative min-h-[480px] w-full -mt-3 md:-mt-6">
           {slides.map((item, i) => (
             <div
               key={i}
@@ -72,7 +72,7 @@ const NovaShowcaseCarousel = () => {
         </div>
 
         {/* Dots */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-120 md:flex hidden space-x-2 z-30">
+        <div className="absolute left-1/2 -translate-x-1/2 top-120 md:flex hidden space-x-2 z-30 -mt-10">
           {slides.map((_, i) => (
             <button
               key={i}
