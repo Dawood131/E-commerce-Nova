@@ -1,10 +1,15 @@
-import React from 'react'
-import Navbar from '../components/Layout/Navbar'
+import React, { useEffect } from 'react'
+import Header from '../components/Header.jsx/Header'
 
 const Login = () => {
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div>
-        <Navbar />
+      <Header />
     </div>
   )
 }

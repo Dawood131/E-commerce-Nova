@@ -22,7 +22,7 @@ const Header = () => {
         <div className="w-full relative">
             {/* Topbar only on desktop */}
             <div
-                className={`transition-transform duration-500 ease-in-out ${scrolled ? "-translate-y-full opacity-0" : "translate-y-0 opacity-100"
+                className={`transition-transform duration-200 ease-in-out ${scrolled ? "-translate-y-full opacity-0" : "translate-y-0 opacity-100"
                     }`}
             >
                 <TopbarTrackorder />
@@ -30,7 +30,7 @@ const Header = () => {
 
             {/* Navbar */}
             <div
-                className={`w-full transition-all duration-500 ease-in-out ${scrolled ? "fixed top-0 z-50 shadow-md" : "relative shadow-none"
+                className={`w-full transition-all duration-200 ease-in-out ${scrolled ? "fixed top-0 z-50 shadow-md" : "relative shadow-none"
                     }`}
             >
                 <Navbar />

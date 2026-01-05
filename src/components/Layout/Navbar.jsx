@@ -4,11 +4,11 @@ import { useSelector } from "react-redux";
 
 import {
   HiOutlineSearch,
-  HiOutlineUser,
   HiOutlineShoppingBag,
-  HiOutlineHome,
   HiOutlineChevronDown
 } from "react-icons/hi";
+import { FiHome } from "react-icons/fi";
+import { RiUser3Line } from "react-icons/ri";
 import { CgMenuLeft } from "react-icons/cg";
 import { TbCircleArrowRightFilled } from "react-icons/tb";
 import { FaRegHeart } from "react-icons/fa";
@@ -35,9 +35,9 @@ const Navbar = () => {
   const mobileItems = [
     { icon: CgMenuLeft, label: "Menu" },
     { icon: HiOutlineShoppingBag, label: "Bag", path: "/cart" },
-    { icon: HiOutlineHome, label: "Home", path: "/" },
+    { icon: FiHome, label: "Home", path: "/" },
     { icon: HiOutlineSearch, label: "Search", path: "/search" },
-    { icon: HiOutlineUser, label: "Account", path: "/login" }
+    { icon: RiUser3Line, label: "Account", path: "/login" }
   ];
 
   const collectionSections = ["Men", "Women", "Kids"];
@@ -162,21 +162,15 @@ const Navbar = () => {
                 }`
               }
             >
-              <HiOutlineUser />
+              <RiUser3Line />
             </NavLink>
           </div>
         </div>
       </nav>
 
       {/* Mobile Navbar */}
-      {location.pathname === "/" ? (
-        <div className="md:hidden fixed top-0 left-0 w-full flex justify-center items-center z-50">
-          <NavLink to="/">
-            <img src="/logo-header.png" alt="Logo" className="h-14 w-auto" />
-          </NavLink>
-        </div>
-      ) : (
-        <div className="md:hidden relative w-full flex justify-center items-center py-2">
+      {location.pathname === "/" && (
+        <div className="md:hidden fixed top-0 left-0 w-full flex justify-center items-center z-50 py-2">
           <NavLink to="/">
             <img src="/logo-header.png" alt="Logo" className="h-14 w-auto" />
           </NavLink>
@@ -191,7 +185,7 @@ const Navbar = () => {
             const isMenu = item.label === "Menu";
 
             const circleClass =
-              "relative flex flex-col items-center justify-center w-15 h-12 rounded-2xl transition-all duration-300";
+              "relative flex flex-col items-center justify-center w-15 h-12 rounded-lg transition-all duration-300";
 
             if (isMenu) {
               return (
@@ -217,18 +211,28 @@ const Navbar = () => {
               >
                 {item.icon && <item.icon className="text-2xl" />}
                 <span className="text-xs mt-0.5">{item.label}</span>
-
-                {/* Badge for cart & wishlist */}
+                {/* Badge for cart */}
                 {item.label === "Bag" && cartItems.length > 0 && (
-                  <span className="absolute -top-0.5 right-3 bg-yellow-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  <span
+                    className={`absolute -top-0.5 right-3 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors duration-200 ${isActive
+                      ? "bg-white text-yellow-500"
+                      : "bg-yellow-500 text-white"
+                      }`}
+                  >
                     {cartItems.length}
                   </span>
                 )}
+
+                {/* Badge for wishlist */}
                 {item.label === "Wishlist" && wishlistItems.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-yellow-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                  <span
+                    className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-200 bg-yellow-500 text-white"
+                  >
                     {wishlistItems.length}
                   </span>
                 )}
+
+
               </NavLink>
             );
           })}
@@ -262,7 +266,10 @@ const Navbar = () => {
         <div className="mb-4 px-4">
           <NavLink
             to="/collection"
-            className="py-3 px-2 rounded-lg hover:bg-yellow-50 hover:text-yellow-600 font-semibold transition-all duration-200 flex justify-between items-center -ml-0.5"
+            className={`py-3 px-2 rounded-lg font-semibold transition-all duration-200 flex justify-between items-center -ml-0.5 ${location.pathname === "/collection"
+              ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600" // active
+              : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700" // inactive
+              }`}
             onClick={() => setMobileMenuOpen(false)}
           >
             Collection
@@ -277,7 +284,10 @@ const Navbar = () => {
             <NavLink
               key={section}
               to={`/collection/${section.toLowerCase()}`}
-              className="py-3 px-2 rounded-lg hover:bg-yellow-50 hover:text-yellow-600 font-medium transition-all duration-200 flex justify-between items-center"
+              className={`py-3 px-2 rounded-lg font-medium transition-all duration-200 flex justify-between items-center ${location.pathname === `/collection/${section.toLowerCase()}`
+                ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600"
+                : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700"
+                }`}
               onClick={() => setMobileMenuOpen(false)}
             >
               {section}
@@ -289,36 +299,41 @@ const Navbar = () => {
         </div>
 
         {/* Wishlist */}
-        <div className="my-2 border-t border-gray-300 w-80 mx-auto"></div>
         <div className="px-4">
           <NavLink
             to="/wishlist"
-            className="relative py-3 px-2 rounded-lg hover:bg-yellow-50 hover:text-yellow-600 font-medium transition-all duration-200 flex justify-between items-center mt-2"
+            className={`relative py-3 px-2 rounded-lg font-medium transition-all duration-200 flex justify-between items-center mt-2 ${location.pathname === "/wishlist"
+              ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600"
+              : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700"
+              }`}
             onClick={() => setMobileMenuOpen(false)}
           >
             Wishlist
-            <span className="text-yellow-600 font-bold">
+            <span className={`text-yellow-600 font-bold`}>
               <FaRegHeart className="h-5 w-5" />
             </span>
             {wishlistItems.length > 0 && (
-              <span className="absolute top-1.5 -right-0.5 bg-yellow-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              <span
+                className={`absolute top-1.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors duration-200 bg-yellow-500 text-white
+                  `}
+              >
                 {wishlistItems.length}
               </span>
             )}
           </NavLink>
         </div>
 
-
         {/* About / Contact / Track Order */}
-        <div className="my-2 border-t border-gray-300 w-80 mx-auto"></div>
         <div className="px-4 flex flex-col space-y-2">
-
-           <NavLink
-            to="/trackorder" 
-            className="relative py-3 px-2 rounded-lg hover:bg-yellow-50 hover:text-yellow-600 font-medium transition-all duration-200 flex justify-between items-center mt-2"
+          <NavLink
+            to="/trackorder"
+            className={`relative py-3 px-2 rounded-lg font-medium transition-all duration-200 flex justify-between items-center mt-2 ${location.pathname === "/trackorder"
+              ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600"
+              : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700"
+              }`}
             onClick={() => setMobileMenuOpen(false)}
           >
-            Track Order
+            Track Your Order
             <span className="text-yellow-600 font-bold">
               <TbCircleArrowRightFilled />
             </span>
@@ -326,7 +341,10 @@ const Navbar = () => {
 
           <NavLink
             to="/about"
-            className="py-3 px-2 rounded-lg hover:bg-yellow-50 hover:text-yellow-600 font-medium transition-all duration-200 flex justify-between items-center"
+            className={`py-3 px-2 rounded-lg font-medium transition-all duration-200 flex justify-between items-center ${location.pathname === "/about"
+              ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600"
+              : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700"
+              }`}
             onClick={() => setMobileMenuOpen(false)}
           >
             About
@@ -334,9 +352,13 @@ const Navbar = () => {
               <TbCircleArrowRightFilled />
             </span>
           </NavLink>
+
           <NavLink
             to="/contact"
-            className="py-3 px-2 rounded-lg hover:bg-yellow-50 hover:text-yellow-600 font-medium transition-all duration-200 flex justify-between items-center mb-3"
+            className={`py-3 px-2 rounded-lg font-medium transition-all duration-200 flex justify-between items-center mb-3 ${location.pathname === "/contact"
+              ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600"
+              : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700"
+              }`}
             onClick={() => setMobileMenuOpen(false)}
           >
             Contact

@@ -35,7 +35,7 @@ const ProductCard = ({ product }) => {
   const handleWishlistClick = () => {
     dispatch(toggleWishlist(product.id));
   };
-  
+
   return (
     <div className="group relative w-full">
       {/* Image */}

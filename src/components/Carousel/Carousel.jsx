@@ -30,7 +30,7 @@ const NovaShowcaseCarousel = () => {
       <div className="max-w-6xl mx-auto relative flex items-center justify-center">
 
         {/* Slides */}
-        <div className="relative min-h-[480px] w-full -mt-3 md:-mt-6">
+        <div className="relative min-h-[480px] w-full mt-2 md:-mt-6">
           {slides.map((item, i) => (
             <div
               key={i}

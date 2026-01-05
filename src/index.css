@@ -1,5 +1,24 @@
 @import "tailwindcss";
-body, html, #root {
+
+body,
+html,
+#root {
   max-width: 100%;
   overflow-x: hidden;
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.25s ease-out;
 }
