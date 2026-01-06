@@ -217,14 +217,14 @@ return (
     >
       <button
         onClick={prev}
-        className="hidden md:flex absolute -left-8 top-50 -translate-y-1/2 bg-white hover:bg-yellow-500 hover:text-white p-3 rounded-full shadow z-10"
+        className="hidden md:flex absolute -left-8 top-42 -translate-y-1/2 bg-white hover:bg-yellow-500 hover:text-white p-3 rounded-full shadow z-10"
       >
         <HiChevronLeft size={24} />
       </button>
 
       <button
         onClick={next}
-        className="hidden md:flex absolute -right-8 top-50 -translate-y-1/2 bg-white hover:bg-yellow-500 hover:text-white p-3 rounded-full shadow z-10"
+        className="hidden md:flex absolute -right-8 top-42 -translate-y-1/2 bg-white hover:bg-yellow-500 hover:text-white p-3 rounded-full shadow z-10"
       >
         <HiChevronRight size={24} />
       </button>

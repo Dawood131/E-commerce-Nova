@@ -26,8 +26,8 @@ const CartPage = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const confirmMoveToWishlist = () => {
-    dispatch(toggleWishlist(selectedProduct.id)); // wishlist me add
-    dispatch(removeFromCart(selectedProduct.id)); // cart se remove
+    dispatch(toggleWishlist(selectedProduct));
+    dispatch(removeFromCart(selectedProduct.id));
     setShowWishlistConfirm(false);
     setSelectedProduct(null);
   };
@@ -72,19 +72,19 @@ const CartPage = () => {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <div className="md:hidden w-full flex justify-center items-center py-2 -mb-36">
+        <div className="md:hidden w-full flex justify-center items-center py-2 -mb-26">
           <NavLink to="/">
             <img src="/logo-header.png" alt="Logo" className="h-14 w-auto" />
           </NavLink>
         </div>
-        
+
         <div className="flex-1 flex items-center justify-center px-4 py-20 mt-10">
           <div className="flex flex-col md:flex-row items-center bg-white shadow-lg rounded-xl max-w-4xl w-full p-8 gap-8">
 
             {/* Left: Illustration */}
             <div className="w-full md:w-1/2 flex justify-center">
               <div className="flex items-center justify-center md:w-64 w-44 md:h-64 h-44 rounded-full bg-yellow-50 shadow-inner">
-                <HiOutlineShoppingBag className="md:text-[160px] text-[120px] text-gray-300 text-yellow-500" />
+                <HiOutlineShoppingBag className="md:text-[160px] text-[120px] text-yellow-500" />
               </div>
             </div>
 
@@ -170,45 +170,6 @@ const CartPage = () => {
                       >
                         Move to Wishlist
                       </button>
-                      {showWishlistConfirm && selectedProduct && (
-                        <div className="fixed inset-0 z-700 flex items-center justify-center bg-black/50 px-4">
-                          <div className="bg-white max-w-xl max-w-md rounded-2xl shadow-2xl p-6 animate-scaleIn">
-
-                            {/* Icon */}
-                            <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-yellow-100">
-                              <FaRegHeart className="text-yellow-500 text-3xl" />
-                            </div>
-
-                            {/* Heading */}
-                            <h3 className="text-2xl font-bold text-gray-900 text-center mb-2">
-                              Move to Wishlist?
-                            </h3>
-
-                            {/* Description */}
-                            <p className="text-gray-600 text-center mb-6 leading-relaxed">
-                              Are you sure you want to move this product to your wishlist? It will be removed from your cart.
-                            </p>
-
-                            {/* Actions */}
-                            <div className="flex gap-3">
-                              <button
-                                onClick={cancelMoveToWishlist}
-                                className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition cursor-pointer"
-                              >
-                                Cancel
-                              </button>
-
-                              <button
-                                onClick={confirmMoveToWishlist}
-                                className="flex-1 py-3 rounded-xl bg-black text-white font-semibold hover:bg-yellow-500 hover:text-black transition cursor-pointer"
-                              >
-                                Yes, Move
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
                     </div>
 
                     {/* Trash Button Top-Right */}
@@ -219,44 +180,6 @@ const CartPage = () => {
                       <GoTrash size={20} />
                     </button>
                   </div>
-                  {showConfirm && (
-                    <div className="fixed inset-0 z-700 flex items-center justify-center bg-black/50 px-4">
-                      <div className="bg-white max-w-xl max-w-md rounded-2xl shadow-2xl p-6 animate-scaleIn">
-
-                        {/* Icon */}
-                        <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-yellow-100">
-                          <GoTrash className="text-black text-3xl" />
-                        </div>
-
-                        {/* Heading */}
-                        <h3 className="text-2xl font-bold text-gray-900 text-center mb-2">
-                          Remove Item?
-                        </h3>
-
-                        {/* Description */}
-                        <p className="text-gray-600 text-center mb-6 leading-relaxed">
-                          This product will be removed from your cart. You can add it again anytime.
-                        </p>
-
-                        {/* Actions */}
-                        <div className="flex gap-3">
-                          <button
-                            onClick={cancelDelete}
-                            className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition cursor-pointer"
-                          >
-                            Cancel
-                          </button>
-
-                          <button
-                            onClick={confirmDelete}
-                            className="flex-1 py-3 rounded-xl bg-black text-white font-semibold hover:bg-yellow-500 hover:text-black transition cursor-pointer"
-                          >
-                            Yes, Remove
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
                   {/* Bottom Row: Quantity */}
                   <div className="flex items-center">
@@ -331,6 +254,83 @@ const CartPage = () => {
           </div>
         </div>
 
+        {showConfirm && (
+          <div className="fixed inset-0 z-700 flex items-center justify-center bg-black/50 px-4">
+            <div className="bg-white max-w-xl max-w-md rounded-2xl shadow-2xl p-6 animate-scaleIn">
+
+              {/* Icon */}
+              <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-yellow-50">
+                <GoTrash className="text-yellow-500 text-3xl" />
+              </div>
+
+              {/* Heading */}
+              <h3 className="text-2xl font-bold text-gray-900 text-center mb-2">
+                Remove Item?
+              </h3>
+
+              {/* Description */}
+              <p className="text-gray-600 text-center mb-6 leading-relaxed">
+                This product will be removed from your cart. You can add it again anytime.
+              </p>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <button
+                  onClick={cancelDelete}
+                  className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={confirmDelete}
+                  className="flex-1 py-3 rounded-xl bg-black text-white font-semibold hover:bg-yellow-500 hover:text-black transition cursor-pointer"
+                >
+                  Yes, Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showWishlistConfirm && selectedProduct && (
+          <div className="fixed inset-0 z-700 flex items-center justify-center bg-black/50 px-4">
+            <div className="bg-white max-w-xl max-w-md rounded-2xl shadow-2xl p-6 animate-scaleIn">
+
+              {/* Icon */}
+              <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-yellow-50 ">
+                <FaRegHeart className="text-yellow-500 text-3xl" />
+              </div>
+
+              {/* Heading */}
+              <h3 className="text-2xl font-bold text-gray-900 text-center mb-2">
+                Move to Wishlist?
+              </h3>
+
+              {/* Description */}
+              <p className="text-gray-600 text-center mb-6 leading-relaxed">
+                Are you sure you want to move this product to your wishlist? It will be removed from your cart.
+              </p>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <button
+                  onClick={cancelMoveToWishlist}
+                  className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={confirmMoveToWishlist}
+                  className="flex-1 py-3 rounded-xl bg-black text-white font-semibold hover:bg-yellow-500 hover:text-black transition cursor-pointer"
+                >
+                  Yes, Move
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <Footer />
     </div>

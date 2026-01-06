@@ -16,7 +16,7 @@ const ProductCard = ({ product }) => {
 
   // Check if this product is in cart/wishlist
   const isInCart = cart.some(item => item.id === product.id);
-  const isWishlisted = wishlist.includes(product.id);
+  const isWishlisted = wishlist.some(item => item.id === product.id);
 
   // Price handling
   const price = product.new_price || product.price;
@@ -33,8 +33,17 @@ const ProductCard = ({ product }) => {
   };
 
   const handleWishlistClick = () => {
-    dispatch(toggleWishlist(product.id));
+    // Pass full product object
+    dispatch(toggleWishlist({
+      id: product.id,
+      name: product.name,
+      price: price,
+      image: Array.isArray(product.image) ? product.image : [product.image],
+      tags: product.tags,
+      isNew: product.isNew
+    }));
   };
+
 
   return (
     <div className="group relative w-full">
@@ -43,7 +52,7 @@ const ProductCard = ({ product }) => {
         <img
           src={image}
           alt={product.name}
-          className=" w-full  h-[220px] sm:h-[250px] md:h-[280px] lg:h-[380px] object-cover  transition-all duration-500  group-hover:scale-105 cursor-pointer"
+          className=" w-full  h-[220px] sm:h-[250px] md:h-[280px] lg:h-[310px] object-cover  transition-all duration-500  group-hover:scale-105 cursor-pointer"
           loading="lazy"
         />
 
