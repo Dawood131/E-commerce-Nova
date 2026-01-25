@@ -33,7 +33,7 @@ export const products = [
         subCategory: "Topwear",
         sizes: ["S", "L", "XL"],
         date: 1716234545448,
-        bestseller: true
+        bestseller: false
     },
     {
         id: "aaaad",
@@ -45,7 +45,7 @@ export const products = [
         subCategory: "Topwear",
         sizes: ["S", "M", "XXL"],
         date: 1716621345448,
-        bestseller: true
+        bestseller: false
     },
     {
         id: "aaaae",
@@ -57,7 +57,7 @@ export const products = [
         subCategory: "Topwear",
         sizes: ["M", "L", "XL"],
         date: 1716622345448,
-        bestseller: true
+        bestseller: false
     },
     {
         id: "aaaaf",
@@ -69,7 +69,7 @@ export const products = [
         subCategory: "Topwear",
         sizes: ["S", "L", "XL"],
         date: 1716623423448,
-        bestseller: true
+        bestseller: false
     },
     {
         id: "aaaag",
@@ -141,7 +141,7 @@ export const products = [
         subCategory: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716624445448,
-        bestseller: false
+        bestseller: true
     },
     {
         id: "aaaam",
@@ -189,7 +189,7 @@ export const products = [
         subCategory: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716628845448,
-        bestseller: false
+        bestseller: true
     },
     {
         id: "aaaaq",
@@ -441,7 +441,7 @@ export const products = [
         subCategory: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716651945448,
-        bestseller: false
+        bestseller: true
     },
     {
         id: "aaabl",
@@ -465,7 +465,7 @@ export const products = [
         subCategory: "Topwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716654145448,
-        bestseller: false
+        bestseller: true
     },
     {
         id: "aaabn",
@@ -513,7 +513,7 @@ export const products = [
         subCategory: "Bottomwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716658545448,
-        bestseller: false
+        bestseller: true
     },
     {
         id: "aaabr",
@@ -549,7 +549,7 @@ export const products = [
         subCategory: "Winterwear",
         sizes: ["S", "M", "L", "XL"],
         date: 1716661845448,
-        bestseller: false
+        bestseller: true
     },
     {
         id: "aaabu",
@@ -622,35 +622,35 @@ export const products = [
         date: 1716668445448,
         bestseller: false
     },
-    { id: 1, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "M", "L"], new_price: 100, old_price: 0, bestseller: true, image: ["/products/product_1.png"] },
-    { id: 2, name: "Men Round Neck Pure Cotton T-shirt", category: "Men", subCategory: "Topwear", sizes: ["M", "L", "XL"], new_price: 200, old_price: 0, bestseller: true, image: ["/products/product_2.png", "/products/product_3.png", "/products/product_4.png", "/products/product_5.png"] },
-    { id: 3, name: "Girls Round Neck Cotton Top", category: "Kids", subCategory: "Topwear", sizes: ["S", "L", "XL"], new_price: 220, old_price: 0, bestseller: true, image: ["/products/product_6.png"] },
-    { id: 4, name: "Men Round Neck Pure Cotton T-shirt", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "XXL"], new_price: 110, old_price: 0, bestseller: true, image: ["/products/product_7.png"] },
-    { id: 5, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["M", "L", "XL"], new_price: 130, old_price: 0, bestseller: true, image: ["/products/product_8.png"] },
-    { id: 6, name: "Girls Round Neck Cotton Top", category: "Kids", subCategory: "Topwear", sizes: ["S", "L", "XL"], new_price: 140, old_price: 0, bestseller: true, image: ["/products/product_9.png"] },
-    { id: 7, name: "Men Tapered Fit Flat-Front Trousers", category: "Men", subCategory: "Bottomwear", sizes: ["S", "L", "XL"], new_price: 190, old_price: 0, bestseller: false, image: ["/products/product_10.png"] },
-    { id: 8, name: "Men Round Neck Pure Cotton T-shirt", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 140, old_price: 0, bestseller: false, image: ["/products/product_11.png"] },
-    { id: 9, name: "Girls Round Neck Cotton Top", category: "Kids", subCategory: "Topwear", sizes: ["M", "L", "XL"], new_price: 100, old_price: 0, bestseller: false, image: ["/products/product_12.png"] },
-    { id: 10, name: "Men Tapered Fit Flat-Front Trousers", category: "Men", subCategory: "Bottomwear", sizes: ["S", "L", "XL"], new_price: 110, old_price: 0, bestseller: false, image: ["/products/product_13.png"] },
-    { id: 11, name: "Men Round Neck Pure Cotton T-shirt", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L"], new_price: 120, old_price: 0, bestseller: false, image: ["/products/product_14.png"] },
-    { id: 12, name: "Men Round Neck Pure Cotton T-shirt", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 150, old_price: 0, bestseller: false, image: ["/products/product_15.png"] },
-    { id: 13, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 130, old_price: 0, bestseller: false, image: ["/products/product_16.png"] },
-    { id: 14, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 160, old_price: 0, bestseller: false, image: ["/products/product_17.png"] },
-    { id: 15, name: "Men Tapered Fit Flat-Front Trousers", category: "Men", subCategory: "Bottomwear", sizes: ["S", "M", "L", "XL"], new_price: 140, old_price: 0, bestseller: false, image: ["/products/product_18.png"] },
-    { id: 16, name: "Girls Round Neck Cotton Top", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 170, old_price: 0, bestseller: false, image: ["/products/product_19.png"] },
-    { id: 17, name: "Men Tapered Fit Flat-Front Trousers", category: "Men", subCategory: "Bottomwear", sizes: ["S", "M", "L", "XL"], new_price: 150, old_price: 0, bestseller: false, image: ["/products/product_20.png"] },
-    { id: 18, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 180, old_price: 0, bestseller: false, image: ["/products/product_21.png"] },
-    { id: 19, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 160, old_price: 0, bestseller: false, image: ["/products/product_22.png"] },
-    { id: 20, name: "Women Palazzo Pants with Waist Belt", category: "Women", subCategory: "Bottomwear", sizes: ["S", "M", "L", "XL"], new_price: 190, old_price: 0, bestseller: false, image: ["/products/product_23.png"] },
-    { id: 21, name: "Women Zip-Front Relaxed Fit Jacket", category: "Women", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], new_price: 170, old_price: 0, bestseller: false, image: ["/products/product_24.png"] },
-    { id: 22, name: "Women Palazzo Pants with Waist Belt", category: "Women", subCategory: "Bottomwear", sizes: ["S", "M", "L", "XL"], new_price: 200, old_price: 0, bestseller: false, image: ["/products/product_25.png"] },
-    { id: 23, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 180, old_price: 0, bestseller: false, image: ["/products/product_26.png"] },
-    { id: 24, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 210, old_price: 0, bestseller: false, image: ["/products/product_27.png"] },
-    { id: 25, name: "Girls Round Neck Cotton Top", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 190, old_price: 0, bestseller: false, image: ["/products/product_28.png"] },
-    { id: 26, name: "Women Zip-Front Relaxed Fit Jacket", category: "Women", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], new_price: 220, old_price: 0, bestseller: false, image: ["/products/product_29.png"] },
-    { id: 27, name: "Girls Round Neck Cotton Top", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 200, old_price: 0, bestseller: false, image: ["/products/product_30.png"] },
-    { id: 28, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], new_price: 230, old_price: 0, bestseller: false, image: ["/products/product_31.png"] },
-    { id: 29, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], new_price: 210, old_price: 0, bestseller: false, image: ["/products/product_32.png"] },
-];
+    { id: 1, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "M", "L"], price: 100, old_price: 0, bestseller: false, image: ["/products/product_1.png"] },
+    { id: 2, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["M", "L", "XL"], price: 200, old_price: 0, bestseller: false, image: ["/products/product_2.png", "/products/product_3.png", "/products/product_4.png", "/products/product_5.png"] },
+    { id: 3, name: "Girls Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "L", "XL"], price: 220, old_price: 0, bestseller: false, image: ["/products/product_6.png"] },
+    { id: 4, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "M", "XXL"], price: 110, old_price: 0, bestseller: false, image: ["/products/product_7.png"] },
+    { id: 5, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["M", "L", "XL"], price: 130, old_price: 0, bestseller: false, image: ["/products/product_8.png"] },
+    { id: 6, name: "Girls Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "L", "XL"], price: 140, old_price: 0, bestseller: false, image: ["/products/product_9.png"] },
+    { id: 7, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topmwear", sizes: ["S", "L", "XL"], price: 190, old_price: 0, bestseller: false, image: ["/products/product_10.png"] },
+    { id: 8, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 140, old_price: 0, bestseller: false, image: ["/products/product_11.png"] },
+    { id: 9, name: "Girls Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["M", "L", "XL"], price: 100, old_price: 0, bestseller: true, image: ["/products/product_12.png"] },
+    { id: 10, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Topwear", sizes: ["S", "L", "XL"], price: 110, old_price: 0, bestseller: false, image: ["/products/product_13.png"] },
+    { id: 11, name: "Men Round Neck Pure Cotton T-shirt", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L"], price: 120, old_price: 0, bestseller: false, image: ["/products/product_14.png"] },
+    { id: 12, name: "Men Round Neck Pure Cotton T-shirt", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 150, old_price: 0, bestseller: false, image: ["/products/product_15.png"] },
+    { id: 13, name: "Men Round Neck Pure Cotton T-shirt", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 130, old_price: 0, bestseller: false, image: ["/products/product_16.png"] },
+    { id: 14, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 160, old_price: 0, bestseller: false, image: ["/products/product_17.png"] },
+    { id: 15, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 140, old_price: 0, bestseller: false, image: ["/products/product_18.png"] },
+    { id: 16, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 170, old_price: 0, bestseller: false, image: ["/products/product_19.png"] },
+    { id: 17, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 150, old_price: 0, bestseller: true, image: ["/products/product_20.png"] },
+    { id: 18, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 180, old_price: 0, bestseller: true, image: ["/products/product_21.png"] },
+    { id: 19, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 160, old_price: 0, bestseller: false, image: ["/products/product_22.png"] },
+    { id: 20, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Bottomwear", sizes: ["S", "M", "L", "XL"], price: 190, old_price: 0, bestseller: true, image: ["/products/product_23.png"] },
+    { id: 21, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], price: 170, old_price: 0, bestseller: false, image: ["/products/product_24.png"] },
+    { id: 22, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Bottomwear", sizes: ["S", "M", "L", "XL"], price: 200, old_price: 0, bestseller: false, image: ["/products/product_25.png"] },
+    { id: 23, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 180, old_price: 0, bestseller: false, image: ["/products/product_26.png"] },
+    { id: 24, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 210, old_price: 0, bestseller: false, image: ["/products/product_27.png"] },
+    { id: 25, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 190, old_price: 0, bestseller: false, image: ["/products/product_28.png"] },
+    { id: 26, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], price: 220, old_price: 0, bestseller: true, image: ["/products/product_29.png"] },
+    { id: 27, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 200, old_price: 0, bestseller: false, image: ["/products/product_30.png"] },
+    { id: 28, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], price: 230, old_price: 0, bestseller: true, image: ["/products/product_31.png"] },
+    { id: 29, name: "Boy Round Neck Pure Cotton T-shirt", category: "Kids", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 210, old_price: 0, bestseller: false, image: ["/products/product_32.png"] },
+].map(product => ({ ...product, id: product.id.toString() }));
 
 export default products;

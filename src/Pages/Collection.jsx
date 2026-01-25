@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import Footer from '../components/Layout/Footer'
-import Header from '../components/Header.jsx/Header'
+import Header from '../components/Header/Header'
 
 const Collection = () => {
 

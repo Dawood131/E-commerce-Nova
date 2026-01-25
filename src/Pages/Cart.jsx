@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
-import Header from "../components/Header.jsx/Header";
+import Header from "../components/Header/Header";
 import MainBtn from "../components/Button/MainBtn";
 import { removeFromCart, updateQuantity } from "../redux/cartSlice";
 import Footer from "../components/Layout/Footer";
@@ -158,7 +158,7 @@ const CartPage = () => {
                       <p className="text-gray-800 font-bold text-sm md:text-base">
                         ${product.price?.toFixed(2) || "0.00"}
                       </p>
-                      <p className="text-gray-600 text-sm">Size: {product.size || "N/A"}</p>
+                      <p className="text-gray-600 text-sm">Size: <span className="font-bold">{product.size || "N/A"}</span></p>
                       <p className="text-green-600 font-medium text-sm">In Stock</p>
 
                       <button
@@ -189,7 +189,7 @@ const CartPage = () => {
                         onClick={() =>
                           handleQuantityChange(product.id, product.quantity - 1)
                         }
-                        className={`flex items-center justify-center px-3 py-2 bg-gray-100 cursor-pointer transition text-gray-700 ${product.quantity === 1
+                        className={`flex items-center justify-center px-3 py-2 bg-gray-100 cursor-pointer transition text-gray-700 rounded-md ${product.quantity === 1
                           ? "opacity-50 cursor-not-allowed"
                           : "hover:text-yellow-500"
                           }`}
@@ -206,7 +206,7 @@ const CartPage = () => {
                         onClick={() =>
                           handleQuantityChange(product.id, product.quantity + 1)
                         }
-                        className={`flex items-center justify-center px-3 py-2 bg-gray-100 cursor-pointer transition text-gray-700 ${product.quantity === 5
+                        className={`flex items-center justify-center px-3 py-2 bg-gray-100 cursor-pointer transition text-gray-700 rounded-md ${product.quantity === 5
                           ? "opacity-50 cursor-not-allowed"
                           : "hover:text-yellow-500"
                           }`}
@@ -248,7 +248,7 @@ const CartPage = () => {
             <span>${total.toFixed(2)}</span>
           </div>
           <div className="flex justify-center">
-            <NavLink to="/">
+            <NavLink to="/checkout">
               <MainBtn text={"Proceed to Checkout"} className="w-70 rounded-lg mt-2" />
             </NavLink>
           </div>

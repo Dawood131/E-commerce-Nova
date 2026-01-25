@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
-import Header from "../components/Header.jsx/Header";
+import Header from "../components/Header/Header";
 import Footer from "../components/Layout/Footer";
 import MainBtn from "../components/Button/MainBtn";
 import { toggleWishlist } from "../redux/wishlistSlice";
@@ -66,7 +66,8 @@ const Wishlist = () => {
 
       <div className="max-w-6xl mx-auto px-4 py-12">
 
-        <div className="flex items-center justify-between mb-8">
+        {/* HEADER */}
+        <div className="flex items-center justify-between pb-4 border-b border-gray-200">
           <div>
             <h1 className="text-3xl font-extrabold text-gray-900">
               My Wishlist
@@ -80,12 +81,16 @@ const Wishlist = () => {
             {wishlistProducts.length}
           </div>
         </div>
+
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-10 md:px-20 px-4 -mt-10 mb-25">
+
+      {/* PRODUCTS GRID (border ke niche) */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-10 md:px-20 px-4 -mt-5 mb-25">
         {wishlistProducts.map((product) => (
-          <ProductCard key={product.id} product={product} /> // ✅ use ProductCard
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
+
 
       <Footer />
     </div>

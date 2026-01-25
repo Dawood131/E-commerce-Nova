@@ -1,40 +1,103 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useParams } from "react-router-dom";
 import MainBtn from "../components/Button/MainBtn";
 
 const ViewTrackOrder = () => {
+  const { trackingId: paramTrackingId } = useParams();
   const [trackingCode, setTrackingCode] = useState("");
   const [order, setOrder] = useState(null);
   const [error, setError] = useState("");
-
-  // Fetch order with validation
   const [loading, setLoading] = useState(false);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
-  const fetchOrder = () => {
-    if (!trackingCode.trim()) {
+  const steps = ["Ordered", "Processed", "Shipped", "Delivered"];
+
+  // Fetch order function
+  const fetchOrder = (code = trackingCode) => {
+    const strCode = String(code || "").trim().toUpperCase();
+    if (!strCode) {
       setError("Please enter a tracking code");
+      setOrder(null);
       return;
     }
-    if (loading) return;
 
     setLoading(true);
-    setError("");
+    const orders = JSON.parse(localStorage.getItem("novaOrders") || "[]");
+    const foundOrder = orders.find((o) => o.id === strCode);
 
-    setOrder({
-      id: trackingCode,
-      date: new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }),
-      status: "Processed",
-      items: [
-        { name: "Men Round Neck Pure Cotton T-shirt", qty: 1, price: 200 },
-        { name: "Girls Round Neck Cotton Top", qty: 2, price: 140 },
-      ],
-    });
+    if (!foundOrder) {
+      setError("Order not found. Please check your tracking code.");
+      setOrder(null);
+    } else {
+      setOrder(foundOrder);
+      setError("");
+      setTrackingCode(strCode);
+
+      // ✅ Set current step from saved order status
+      const savedStepIndex = steps.indexOf(foundOrder.status || "Ordered");
+      setCurrentStepIndex(savedStepIndex >= 0 ? savedStepIndex : 0);
+    }
 
     setLoading(false);
   };
 
-  const steps = ["Ordered", "Processed", "Shipped", "Delivered"];
-  const currentStepIndex = order ? steps.indexOf(order.status) : 0;
+  // Auto-fill tracking code from latest order
+  useEffect(() => {
+    const allOrders = JSON.parse(localStorage.getItem("novaOrders") || "[]");
+    const currentUser = JSON.parse(localStorage.getItem("novaCurrentUser"));
+    if (!currentUser) return;
+
+    let latestOrderId = paramTrackingId
+      ? paramTrackingId.trim().toUpperCase()
+      : localStorage.getItem(`novaLastTrackingId_${currentUser.email}`);
+
+    // Only set if order exists
+    const foundOrder = allOrders.find((o) => o.id === latestOrderId);
+    if (foundOrder) {
+      setTrackingCode(foundOrder.id);
+      setOrder(null); // fetch only on button click
+      // Set step index from saved status
+      const savedStepIndex = steps.indexOf(foundOrder.status || "Ordered");
+      setCurrentStepIndex(savedStepIndex >= 0 ? savedStepIndex : 0);
+    } else {
+      setTrackingCode("");
+      setCurrentStepIndex(0);
+    }
+  }, [paramTrackingId]);
+
+  // Auto-progress steps every 5s until Delivered
+  useEffect(() => {
+    if (!order) return;
+    if (currentStepIndex >= steps.length - 1) return;
+
+    const interval = setInterval(() => {
+      setCurrentStepIndex((prev) => {
+        const next = prev < steps.length - 1 ? prev + 1 : prev;
+
+        // Update order status in localStorage every step
+        const orders = JSON.parse(localStorage.getItem("novaOrders") || "[]");
+        const orderIndex = orders.findIndex((o) => o.id === order.id);
+        if (orderIndex !== -1) {
+          orders[orderIndex].status = steps[next];
+          localStorage.setItem("novaOrders", JSON.stringify(orders));
+        }
+
+        return next;
+      });
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [order, currentStepIndex]);
+
+  // Format date
+  const formatDate = (dateStr) => {
+    const d = new Date(dateStr);
+    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+  };
+
+  const total = order
+    ? order.items.reduce((acc, item) => acc + item.price * item.quantity, 0)
+    : 0;
 
   return (
     <>
@@ -45,7 +108,7 @@ const ViewTrackOrder = () => {
           className="md:h-24 h-14 w-fit mx-auto mt-2"
         />
       </NavLink>
-      <div className="max-w-5xl mx-auto p-6 min-h-screen">
+      <div className="max-w-5xl mx-auto p-6 ">
         {/* Track Input */}
         {!order && (
           <div className="bg-white rounded-2xl shadow-lg p-12 max-w-md mx-auto flex flex-col items-center mt-10">
@@ -69,16 +132,14 @@ const ViewTrackOrder = () => {
             />
 
             {error && (
-              <p className="text-red-500 text-sm mb-6 text-center">
-                {error}
-              </p>
+              <p className="text-red-500 text-sm mb-6 text-center">{error}</p>
             )}
 
             <div className="w-full flex justify-center mt-4">
               <MainBtn
                 text={loading ? "Tracking..." : "Track Order"}
                 className="w-60 rounded-lg"
-                onClick={fetchOrder}
+                onClick={() => fetchOrder(trackingCode)}
               />
             </div>
           </div>
@@ -95,14 +156,12 @@ const ViewTrackOrder = () => {
               </div>
               <div className="flex justify-between">
                 <span className="font-bold text-gray-700">Order Date:</span>
-                <span className="text-gray-900">{order.date}</span>
+                <span className="text-gray-900">{formatDate(order.date)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-bold text-gray-700">
-                  Current Status:
-                </span>
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-gray-700">Current Status:</span>
                 <span className="text-yellow-500 font-semibold">
-                  {order.status}
+                  {steps[currentStepIndex]}
                 </span>
               </div>
             </div>
@@ -123,15 +182,14 @@ const ViewTrackOrder = () => {
                       {index + 1}
                     </div>
 
-                    <div className="mt-2 text-sm text-gray-700 font-semibold">{step}</div>
+                    <div className="mt-2 text-sm text-gray-700 font-semibold">
+                      {step}
+                    </div>
 
                     {index < steps.length - 1 && (
                       <div
                         className={`absolute top-5 right-0 w-full h-1 border-t-2
-                      ${index < currentStepIndex
-                            ? "border-yellow-500"
-                            : "border-gray-300"
-                          }`}
+                      ${index < currentStepIndex ? "border-yellow-500" : "border-gray-300"}`}
                         style={{ zIndex: -1 }}
                       />
                     )}
@@ -142,38 +200,26 @@ const ViewTrackOrder = () => {
 
             {/* Items */}
             <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-              <h2 className="text-lg font-bold mb-4 text-gray-800">
-                Order Items
-              </h2>
+              <h2 className="text-lg font-bold mb-4 text-gray-800">Order Items</h2>
 
               {order.items.map((item, idx) => (
                 <div
                   key={idx}
-                  className="flex justify-between py-3 border-b last:border-none"
+                  className="flex justify-between py-3 border-b border-b-gray-400 last:border-none"
                 >
                   <div>
-                    <div className="font-medium text-gray-900">
-                      {item.name}
-                    </div>
+                    <div className="font-medium text-gray-900">{item.name}</div>
                     <div className="text-sm text-gray-500">
-                      Quantity: {item.qty}
+                      Quantity: {item.quantity}
                     </div>
                   </div>
-                  <div className="font-semibold text-gray-800">
-                    ${item.price}
-                  </div>
+                  <div className="font-semibold text-gray-800">${item.price}</div>
                 </div>
               ))}
 
               <div className="flex justify-between mt-4 font-bold text-lg">
                 <span>Total</span>
-                <span>
-                  $
-                  {order.items.reduce(
-                    (acc, item) => acc + item.price * item.qty,
-                    0
-                  )}
-                </span>
+                <span>${total}</span>
               </div>
             </div>
 

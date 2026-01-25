@@ -4,102 +4,141 @@ import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart } from "../../redux/cartSlice";
 import { toggleWishlist } from "../../redux/wishlistSlice";
+import { openModal } from "../../redux/uiModalSlice";
+import { NavLink } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const wishlist = useSelector((state) => state.wishlist.items);
   const cart = useSelector((state) => state.cart.items);
 
-  // Local hover states (independent for each card)
-  const [hoverCart, setHoverCart] = useState(false);
   const [hoverWishlist, setHoverWishlist] = useState(false);
+  const [showSizeSelector, setShowSizeSelector] = useState(false);
 
-  // Check if this product is in cart/wishlist
-  const isInCart = cart.some(item => item.id === product.id);
-  const isWishlisted = wishlist.some(item => item.id === product.id);
+  const cartItem = cart.find((item) => item.id === product.id);
+  const selectedSize = cartItem?.selectedSize || "";
+  const isInCart = cartItem?.isInCart || false;
+  const isWishlisted = wishlist.some((item) => item.id === product.id);
 
-  // Price handling
   const price = product.new_price || product.price;
   const oldPrice = product.old_price || null;
   const image = Array.isArray(product.image) ? product.image[0] : product.image;
 
-  // Handlers
-  const handleCartClick = () => {
-    if (isInCart) {
+  // ================= CART SIZE SELECT =================
+  const handleSizeSelect = (size) => {
+    if (product.size === size) {
       dispatch(removeFromCart(product.id));
-    } else {
-      dispatch(addToCart(product));
+      setShowSizeSelector(false);
+      return;
+    }
+
+    if (cartItem) {
+      dispatch(removeFromCart(product.id));
+    }
+
+    const cartProduct = { ...product, size };
+
+    dispatch(addToCart(cartProduct));
+    dispatch(openModal({ type: "cart", product: cartProduct }));
+    setShowSizeSelector(false);
+  };
+
+  // ================= WISHLIST =================
+  const handleWishlistClick = () => {
+    const wishlistProduct = {
+      ...product, // 🔥 FULL PRODUCT (sizes preserved)
+      image: Array.isArray(product.image) ? product.image : [product.image],
+      size: product.size || null,
+    };
+
+    dispatch(toggleWishlist(wishlistProduct));
+
+    if (!isWishlisted) {
+      dispatch(openModal({ type: "wishlist", product: wishlistProduct }));
     }
   };
 
-  const handleWishlistClick = () => {
-    // Pass full product object
-    dispatch(toggleWishlist({
-      id: product.id,
-      name: product.name,
-      price: price,
-      image: Array.isArray(product.image) ? product.image : [product.image],
-      tags: product.tags,
-      isNew: product.isNew
-    }));
-  };
-
-
+  // ================= JSX =================
   return (
     <div className="group relative w-full">
-      {/* Image */}
+      {/* IMAGE */}
       <div className="relative overflow-hidden rounded-md">
-        <img
-          src={image}
-          alt={product.name}
-          className=" w-full  h-[220px] sm:h-[250px] md:h-[280px] lg:h-[310px] object-cover  transition-all duration-500  group-hover:scale-105 cursor-pointer"
-          loading="lazy"
-        />
-
-        {/* Wishlist Button */}
+        <NavLink to={`/product/${product.id}`}>
+          <img
+            src={image}
+            alt={product.name}
+            className="w-full h-[220px] sm:h-[250px] md:h-[280px] lg:h-[310px] object-cover transition-all duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        </NavLink>
+        {/* WISHLIST BUTTON */}
         <button
           onClick={handleWishlistClick}
           onMouseEnter={() => setHoverWishlist(true)}
           onMouseLeave={() => setHoverWishlist(false)}
-          className={`absolute top-3 right-3 p-2 rounded-full shadow-sm transition-all duration-300 
+          className={`absolute top-3 right-3 p-2 rounded-full shadow-sm transition-all
             ${isWishlisted
               ? "bg-yellow-400 text-white"
               : hoverWishlist
-                ? "text-yellow-400 bg-white hover:bg-white/90"
-                : "bg-white text-gray-600 hover:bg-white/90"}`}
+                ? "bg-white text-yellow-400"
+                : "bg-white text-gray-600"
+            }`}
         >
-          {isWishlisted || hoverWishlist ? <AiFillHeart size={22} /> : <AiOutlineHeart size={22} />}
+          {isWishlisted || hoverWishlist ? (
+            <AiFillHeart size={22} />
+          ) : (
+            <AiOutlineHeart size={22} />
+          )}
         </button>
 
-        {/* Cart Button */}
-        <button
-          onClick={handleCartClick}
-          onMouseEnter={() => setHoverCart(true)}
-          onMouseLeave={() => setHoverCart(false)}
-          className={`absolute bottom-3 left-3 p-2 rounded-full shadow-md flex items-center justify-center transition-all duration-300
-            ${isInCart
-              ? "bg-yellow-400 text-white"
-              : hoverCart
-                ? "text-yellow-400 bg-white hover:bg-white/90"
-                : "bg-white text-gray-700 hover:bg-gray-100"}`}
+        {/* CART + SIZE */}
+        <div
+          className="absolute bottom-3 left-3 flex items-center space-x-2"
+          onMouseEnter={() => setShowSizeSelector(true)}
+          onMouseLeave={() => setShowSizeSelector(false)}
         >
-          <TbShoppingBagPlus size={20} />
-        </button>
+          {!showSizeSelector && (
+            <button
+              className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition
+            ${isInCart ? "bg-yellow-500 text-white" : "bg-white text-gray-700 hover:bg-yellow-400 hover:text-white"}`}
+            >
+              <TbShoppingBagPlus size={20} />
+            </button>
+
+          )}
+
+          {showSizeSelector && product.sizes?.length > 0 && (
+            <div className="flex space-x-1 bg-yellow-50 px-2 py-1 rounded-full shadow-sm">
+              {product.sizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => handleSizeSelect(size)}
+                  className={`md:w-9 w-8 md:h-9 h-8 md:ml-0 -ml-0.5 rounded-full text-sm font-medium transition
+                    ${selectedSize === size
+                      ? "bg-yellow-400 text-white"
+                      : "bg-white text-gray-700 hover:bg-yellow-400 hover:text-white"
+                    }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Content */}
+      {/* CONTENT */}
       <div className="mt-3">
-        {/* Tags */}
         {product.tags && (
-          <p className="text-[12px] text-gray-500 cursor-pointer">{product.tags}</p>
+          <p className="text-[12px] text-gray-500">{product.tags}</p>
         )}
-
-        {/* Title */}
-        <h2 className="text-[14px] font-medium mt-1 leading-tight cursor-pointer">{product.name}</h2>
-
-        {/* Price */}
+        <NavLink to={`/product/${product.id}`}>
+          <h2 className="text-[14px] font-medium mt-1">{product.name}</h2>
+        </NavLink>
         <div className="mt-1 flex items-center gap-2">
-          <span className="text-[16px] font-semibold">$ {price.toLocaleString()}</span>
+          <span className="text-[16px] font-semibold">
+            $ {price.toLocaleString()}
+          </span>
           {oldPrice && (
             <span className="text-sm line-through text-gray-400">
               $ {oldPrice.toLocaleString()}
@@ -107,7 +146,6 @@ const ProductCard = ({ product }) => {
           )}
         </div>
 
-        {/* New Badge */}
         {product.isNew && (
           <span className="text-[11px] bg-black text-white px-2 py-0.5 rounded-full inline-block mt-1">
             New

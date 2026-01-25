@@ -15,7 +15,7 @@ const Footer = () => {
     };
 
     return (
-        <footer className="bg-gray-50 text-gray-800 pt-16">
+        <footer className="bg-gray-50 text-gray-800 pt-16 pb-2">
             <div className="max-w-screen-xl mx-auto px-6 sm:px-10 lg:px-20">
                 {/* Top Section */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 mb-16">
@@ -110,7 +110,7 @@ const Footer = () => {
 
                 {/* Copyright */}
                 <div className="text-center md:mt-6 text-gray-600 text-xs md:mb-6 mb-20">
-                    © 2025 NOVA. All Rights Reserved. <br />
+                    © 2026 NOVA. All Rights Reserved. <br />
                     Fashion that moves with you.
                 </div>
             </div>

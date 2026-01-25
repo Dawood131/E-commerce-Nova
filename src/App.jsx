@@ -6,16 +6,21 @@ import About from './Pages/About'
 import Contact from './Pages/Contact'
 import Cart from './Pages/Cart'
 import Wishlist from './Pages/Wishlist'
-import Orders from './Pages/Orders'
-import PlaceOrder from './Pages/PlaceOrder'
-import Products from './Pages/Products'
+import ProductPage from './Pages/ProductPage'
 import Search from './Pages/Search';
-import Login from './Auth/Login';
+import SignIn from './Pages/Auth/SignIn';
+import SignUp from './Pages/Auth/SignUp';
+import ForgotPassword from './Pages/Auth/ForgotPassword';
 import TrackOrder from './Pages/TrackOrder'
+import UiModal from './components/Modals/UiModal';
+import Checkout from './Pages/Checkout';
+import { Toaster } from "sonner";
 
 const App = () => {
     return (
         <div>
+            <UiModal />
+            <Toaster position="top-right" reverseOrder={false} />
             <Routes>
                 <Route path='/' element={<Home />} />
                 <Route path='/collection' element={<Collection />} />
@@ -24,11 +29,14 @@ const App = () => {
                 <Route path='/contact' element={<Contact />} />
                 <Route path='/cart' element={<Cart />} />
                 <Route path='/wishlist' element={<Wishlist />} />
-                <Route path='/orders' element={<Orders />} />
-                <Route path='/place-order' element={<PlaceOrder />} />
-                <Route path='/products' element={<Products />} />
-                <Route path='/login' element={<Login />} />
-                <Route path='/trackorder' element={<TrackOrder />} />
+                <Route path="/product/:id" element={<ProductPage />} />
+                <Route path='/signin' element={<SignIn />} />
+                <Route path='/signup' element={<SignUp />} />
+                <Route path='/forgot-password' element={<ForgotPassword />} />
+                <Route path='/checkout' element={<Checkout />} />
+                <Route path="/trackorder/:trackingId" element={<TrackOrder />} />
+                <Route path="*" element={<div>Page Not Found</div>} />
+
             </Routes>
         </div>
     );

@@ -37,7 +37,7 @@ const Navbar = () => {
     { icon: HiOutlineShoppingBag, label: "Bag", path: "/cart" },
     { icon: FiHome, label: "Home", path: "/" },
     { icon: HiOutlineSearch, label: "Search", path: "/search" },
-    { icon: RiUser3Line, label: "Account", path: "/login" }
+    { icon: RiUser3Line, label: "Account", path: "/signin" }
   ];
 
   const collectionSections = ["Men", "Women", "Kids"];
@@ -156,7 +156,7 @@ const Navbar = () => {
 
             {/* Account */}
             <NavLink
-              to="/login"
+              to="/signin"
               className={({ isActive }) =>
                 `cursor-pointer transition-colors duration-300 ${isActive ? "text-yellow-600" : "hover:text-yellow-500"
                 }`
