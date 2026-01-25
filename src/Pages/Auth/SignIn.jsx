@@ -157,10 +157,10 @@ const SignIn = () => {
             </div>
 
             <div className="flex justify-between items-center -mt-4">
-              <p className="text-sm text-red-500 min-h-[1rem]">{loginError}</p>
+              <p className="md:text-sm text-[12px] text-red-500 min-h-[1rem]">{loginError}</p>
               <NavLink
                 to="/forgot-password"
-                className="text-sm text-gray-500 hover:text-[#d4af37]"
+                className="md:text-sm text-[12px] text-gray-500 hover:text-[#d4af37]"
               >
                 Forgot password?
               </NavLink>

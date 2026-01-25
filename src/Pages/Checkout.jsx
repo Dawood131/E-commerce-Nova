@@ -118,44 +118,50 @@ const CheckoutPage = () => {
         localStorage.setItem("checkoutData", JSON.stringify(data));
     }, [form, selectedCountry, selectedCity]);
 
-const placeOrder = () => {
-    if (!validate()) return;
+    const placeOrder = () => {
+        if (!validate()) return;
 
-    const loggedInUser = JSON.parse(localStorage.getItem("novaCurrentUser"));
-    if (!loggedInUser || loggedInUser.email !== form.email) return;
+        const loggedInUser = JSON.parse(localStorage.getItem("novaCurrentUser"));
 
-    // Generate tracking ID
-    const id = uuidv4().slice(0, 8).toUpperCase();
-    setTrackingId(id);
+        if (!loggedInUser) {
+            toast.error("Please sign in or create an account to place your order.");
+            navigate("/signin"); // ya /login
+            return;
+        }
 
-    // Save order
-    const orderData = {
-        userEmail: loggedInUser.email,
-        id,
-        items: cart,
-        total,
-        form,
-        country: selectedCountry?.value,
-        city: selectedCity?.value,
-        payment: form.payment,
-        date: new Date().toISOString(),
+        if (loggedInUser.email !== form.email) {
+            toast.error("Please use the same email as your signed-in account.");
+            return;
+        }
+
+
+        // Generate tracking ID
+        const id = uuidv4().slice(0, 8).toUpperCase();
+        setTrackingId(id);
+
+        // Save order
+        const orderData = {
+            userEmail: loggedInUser.email,
+            id,
+            items: cart,
+            total,
+            form,
+            country: selectedCountry?.value,
+            city: selectedCity?.value,
+            payment: form.payment,
+            date: new Date().toISOString(),
+        };
+
+        const allOrders = JSON.parse(localStorage.getItem("novaOrders") || "[]");
+        allOrders.push(orderData);
+        localStorage.setItem("novaOrders", JSON.stringify(allOrders));
+        localStorage.setItem(
+            `novaLastTrackingId_${loggedInUser.email}`,
+            id
+        );
+        cart.forEach(item => dispatch(removeFromCart(item.id)));
+        setShowSuccess(true);
     };
-
-    const allOrders = JSON.parse(localStorage.getItem("novaOrders") || "[]");
-    allOrders.push(orderData);
-    localStorage.setItem("novaOrders", JSON.stringify(allOrders));
-
-    // ✅ Save latest order ID by user
-    localStorage.setItem(
-        `novaLastTrackingId_${loggedInUser.email}`,
-        id
-    );
-
-    // Clear cart
-    cart.forEach(item => dispatch(removeFromCart(item.id)));
-
-    setShowSuccess(true);
-};
 
 
 
@@ -271,7 +277,7 @@ const placeOrder = () => {
                                         {item.name}
                                     </p>
                                     <p className="text-xs text-gray-500">
-                                        Size: {item.size} · Qty: {item.quantity}
+                                        Size: {item.selectedSize} · Qty: {item.quantity}
                                     </p>
                                 </div>
 
@@ -468,9 +474,9 @@ const placeOrder = () => {
                                     className="peer w-full border-b-2 py-2 focus:outline-none focus:border-[#d4af37] border-gray-300"
                                 />
                                 <label className={`absolute left-0 text-gray-400 text-sm transition-all
-          ${isFilled("postalCode") ? "-top-4 text-xs text-[#d4af37]" : "top-2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-3 peer-focus:text-[#d4af37] peer-focus:text-xs"}`}
+          ${isFilled("postalCode") ? "-top-4 text-xs text-[#d4af37]" : "top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-3 peer-focus:text-[#d4af37] peer-focus:text-xs"}`}
                                 >
-                                    Postal code (optional)
+                                    Postal code
                                 </label>
                             </div>
 
@@ -614,7 +620,7 @@ const placeOrder = () => {
                                 />
                                 <div className="flex-1">
                                     <p className="font-medium text-gray-800">{item.name}</p>
-                                    <p className="text-gray-500 text-sm">Size: {item.size}</p>
+                                    <p className="text-gray-500 text-sm">Size: {item.selectedSize}</p>
                                     <p className="text-gray-500 text-sm">Qty: {item.quantity}</p>
                                 </div>
                                 <p className="font-semibold text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>

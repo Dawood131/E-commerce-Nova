@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { TbShoppingBagPlus } from "react-icons/tb";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,6 +14,7 @@ const ProductCard = ({ product }) => {
 
   const [hoverWishlist, setHoverWishlist] = useState(false);
   const [showSizeSelector, setShowSizeSelector] = useState(false);
+  const sizeSelectorRef = useRef(null);
 
   const cartItem = cart.find((item) => item.id === product.id);
   const selectedSize = cartItem?.selectedSize || "";
@@ -26,22 +27,20 @@ const ProductCard = ({ product }) => {
 
   // ================= CART SIZE SELECT =================
   const handleSizeSelect = (size) => {
-    if (product.size === size) {
+    const cartItem = cart.find((item) => item.id === product.id);
+
+    if (cartItem && cartItem.selectedSize === size) {
       dispatch(removeFromCart(product.id));
       setShowSizeSelector(false);
       return;
     }
 
-    if (cartItem) {
-      dispatch(removeFromCart(product.id));
-    }
-
-    const cartProduct = { ...product, size };
-
+    const cartProduct = { ...product, selectedSize: size };
     dispatch(addToCart(cartProduct));
     dispatch(openModal({ type: "cart", product: cartProduct }));
     setShowSizeSelector(false);
   };
+
 
   // ================= WISHLIST =================
   const handleWishlistClick = () => {
@@ -57,6 +56,19 @@ const ProductCard = ({ product }) => {
       dispatch(openModal({ type: "wishlist", product: wishlistProduct }));
     }
   };
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (sizeSelectorRef.current && !sizeSelectorRef.current.contains(e.target)) {
+        setShowSizeSelector(false);
+      }
+    };
+
+    if (showSizeSelector) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showSizeSelector]);
 
   // ================= JSX =================
   return (
@@ -68,7 +80,7 @@ const ProductCard = ({ product }) => {
             src={image}
             alt={product.name}
             className="w-full h-[220px] sm:h-[250px] md:h-[280px] lg:h-[310px] object-cover transition-all duration-500 group-hover:scale-105"
-            loading="lazy"
+            loading="eager"
           />
         </NavLink>
         {/* WISHLIST BUTTON */}
@@ -93,28 +105,29 @@ const ProductCard = ({ product }) => {
 
         {/* CART + SIZE */}
         <div
+          ref={sizeSelectorRef}
           className="absolute bottom-3 left-3 flex items-center space-x-2"
-          onMouseEnter={() => setShowSizeSelector(true)}
-          onMouseLeave={() => setShowSizeSelector(false)}
+          onMouseEnter={() => window.innerWidth >= 768 && setShowSizeSelector(true)}
+          onMouseLeave={() => window.innerWidth >= 768 && setShowSizeSelector(false)}
         >
           {!showSizeSelector && (
             <button
               className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition
-            ${isInCart ? "bg-yellow-500 text-white" : "bg-white text-gray-700 hover:bg-yellow-400 hover:text-white"}`}
+        ${isInCart ? "bg-yellow-500 text-white" : "bg-white text-gray-700 hover:bg-yellow-400 hover:text-white"}`}
+              onClick={() => window.innerWidth < 768 && setShowSizeSelector(true)} // click only on mobile
             >
               <TbShoppingBagPlus size={20} />
             </button>
-
           )}
 
           {showSizeSelector && product.sizes?.length > 0 && (
-            <div className="flex space-x-1 bg-yellow-50 px-2 py-1 rounded-full shadow-sm">
+            <div className="flex space-x-1 bg-yellow-50 px-2 py-1 rounded-full shadow-sm md:ml-0 -ml-2">
               {product.sizes.map((size) => (
                 <button
                   key={size}
                   onClick={() => handleSizeSelect(size)}
                   className={`md:w-9 w-8 md:h-9 h-8 md:ml-0 -ml-0.5 rounded-full text-sm font-medium transition
-                    ${selectedSize === size
+            ${selectedSize === size
                       ? "bg-yellow-400 text-white"
                       : "bg-white text-gray-700 hover:bg-yellow-400 hover:text-white"
                     }`}
@@ -122,9 +135,11 @@ const ProductCard = ({ product }) => {
                   {size}
                 </button>
               ))}
+
             </div>
           )}
         </div>
+
       </div>
 
       {/* CONTENT */}

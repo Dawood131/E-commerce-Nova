@@ -5,19 +5,15 @@ const TopbarTrackorder = () => {
   const [trackingId, setTrackingId] = useState("");
 
   useEffect(() => {
-    // Get current logged-in user
     const currentUser = JSON.parse(localStorage.getItem("novaCurrentUser"));
     if (!currentUser) return;
-
-    // Fetch latest order ID for this user from localStorage
     const latestOrderId = localStorage.getItem(
       `novaLastTrackingId_${currentUser.email}`
     );
-
     if (latestOrderId) {
-      setTrackingId(latestOrderId); // ✅ show latest order ID
+      setTrackingId(latestOrderId); 
     } else {
-      setTrackingId(""); // blank if no order exists
+      setTrackingId("");
     }
   }, []);
 

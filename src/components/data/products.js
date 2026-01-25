@@ -628,7 +628,7 @@ export const products = [
     { id: 4, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "M", "XXL"], price: 110, old_price: 0, bestseller: false, image: ["/products/product_7.png"] },
     { id: 5, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["M", "L", "XL"], price: 130, old_price: 0, bestseller: false, image: ["/products/product_8.png"] },
     { id: 6, name: "Girls Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "L", "XL"], price: 140, old_price: 0, bestseller: false, image: ["/products/product_9.png"] },
-    { id: 7, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topmwear", sizes: ["S", "L", "XL"], price: 190, old_price: 0, bestseller: false, image: ["/products/product_10.png"] },
+    { id: 7, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "L", "XL"], price: 190, old_price: 0, bestseller: false, image: ["/products/product_10.png"] },
     { id: 8, name: "Women Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["S", "M", "L", "XL"], price: 140, old_price: 0, bestseller: false, image: ["/products/product_11.png"] },
     { id: 9, name: "Girls Round Neck Cotton Top", category: "Women", subCategory: "Topwear", sizes: ["M", "L", "XL"], price: 100, old_price: 0, bestseller: true, image: ["/products/product_12.png"] },
     { id: 10, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Topwear", sizes: ["S", "L", "XL"], price: 110, old_price: 0, bestseller: false, image: ["/products/product_13.png"] },

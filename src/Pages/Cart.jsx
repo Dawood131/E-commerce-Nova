@@ -158,7 +158,7 @@ const CartPage = () => {
                       <p className="text-gray-800 font-bold text-sm md:text-base">
                         ${product.price?.toFixed(2) || "0.00"}
                       </p>
-                      <p className="text-gray-600 text-sm">Size: <span className="font-bold">{product.size || "N/A"}</span></p>
+                      <p className="text-gray-600 text-sm">Size: <span className="font-bold">{product.selectedSize  || "N/A"}</span></p>
                       <p className="text-green-600 font-medium text-sm">In Stock</p>
 
                       <button

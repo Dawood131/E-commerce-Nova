@@ -14,7 +14,7 @@ const saveCartToStorage = (items) => {
 };
 
 const initialState = {
-  items: loadCartFromStorage(), 
+  items: loadCartFromStorage(),
 };
 
 export const cartSlice = createSlice({
@@ -26,25 +26,34 @@ export const cartSlice = createSlice({
       const exists = state.items.find((item) => item.id === product.id);
 
       if (exists) {
-        exists.quantity += 1;
-        exists.isInCart = true; // icon highlight flag
-        if (product.selectedSize) exists.selectedSize = product.selectedSize; // save size
-      } else {
-        state.items.push({ 
-          ...product, 
-          quantity: 1, 
-          isInCart: true, // new product icon state
-          selectedSize: product.selectedSize || "" // default size
+        // 🔁 SAME SIZE → REMOVE (toggle)
+        if (exists.selectedSize === product.selectedSize) {
+          state.items = state.items.filter(
+            (item) => item.id !== product.id
+          );
+        }
+        else {
+          exists.selectedSize = product.selectedSize;
+          exists.isInCart = true;
+        }
+      }
+      else {
+        state.items.push({
+          ...product,
+          quantity: 1,
+          isInCart: true,
+          selectedSize: product.selectedSize,
         });
       }
 
       saveCartToStorage(state.items);
     },
 
+
     removeFromCart: (state, action) => {
       const id = action.payload;
       state.items = state.items.filter((item) => item.id !== id);
-      saveCartToStorage(state.items); 
+      saveCartToStorage(state.items);
     },
 
     updateQuantity: (state, action) => {
@@ -59,10 +68,9 @@ export const cartSlice = createSlice({
         }
       }
 
-      saveCartToStorage(state.items); 
+      saveCartToStorage(state.items);
     },
 
-    // ✅ new reducer for size/icon updates
     updateProductOptions: (state, action) => {
       const { id, selectedSize, isInCart } = action.payload;
       const product = state.items.find((item) => item.id === id);

@@ -13,6 +13,8 @@ import { CgMenuLeft } from "react-icons/cg";
 import { TbCircleArrowRightFilled } from "react-icons/tb";
 import { FaRegHeart } from "react-icons/fa";
 
+import { products } from "../data/products";
+
 const Navbar = () => {
   const location = useLocation();
   const [shadow, setShadow] = useState(false);
@@ -21,15 +23,16 @@ const Navbar = () => {
   const menuRef = useRef(null);
   const menuButtonRef = useRef(null);
 
-  // Redux state
   const cartItems = useSelector((state) => state.cart.items);
   const wishlistItems = useSelector((state) => state.wishlist.items);
 
+  const [trackingId, setTrackingId] = useState("");
+
   const desktopLinks = [
     { name: "Home", path: "/" },
-    { name: "Collection", path: "/collection" },
-    { name: "About", path: "/about" },
-    { name: "Contact", path: "/contact" }
+    { name: "Men", path: "/collection/men" },
+    { name: "Women", path: "/collection/women" },
+    { name: "Kids", path: "/collection/kids" }
   ];
 
   const mobileItems = [
@@ -40,9 +43,7 @@ const Navbar = () => {
     { icon: RiUser3Line, label: "Account", path: "/signin" }
   ];
 
-  const collectionSections = ["Men", "Women", "Kids"];
-
-  // Scroll shadow effect
+  // Scroll shadow
   useEffect(() => {
     const handleScroll = () => setShadow(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
@@ -65,51 +66,82 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [mobileMenuOpen]);
 
+  // Load last tracking id
+  useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem("novaCurrentUser"));
+    if (!currentUser) return;
+
+    const latestOrderId = localStorage.getItem(
+      `novaLastTrackingId_${currentUser.email}`
+    );
+    setTrackingId(latestOrderId || "");
+  }, []);
+
+  // Helper: get subcategories dynamically
+  const getSubCategories = (category) => {
+    return [
+      ...new Set(
+        products
+          .filter((p) => p.category === category)
+          .map((p) => p.subCategory)
+      )
+    ];
+  };
+
   return (
     <>
       {/* Desktop Navbar */}
       <nav
-        className={`hidden md:flex fixed w-full bg-white text-black z-200 transition-shadow duration-300 ${shadow ? "shadow-md" : ""
+        className={`hidden md:flex fixed w-full bg-white text-black z-50 transition-shadow duration-300 ${shadow ? "shadow-md" : ""
           }`}
       >
         <div className="container mx-auto px-6 py-2 flex items-center justify-between h-20">
           {/* Logo */}
-          <NavLink to="/" className="flex-shrink-0">
+          <NavLink to="/">
             <img src="/logo-header.png" alt="Logo" className="h-14 w-auto" />
           </NavLink>
 
           {/* Links */}
           <ul className="flex space-x-12 font-medium text-lg">
             {desktopLinks.map((link) => {
-              const isCollection = link.name === "Collection";
+              const isCategory = ["Men", "Women", "Kids"].includes(link.name);
+              const subCategories = isCategory ? getSubCategories(link.name) : [];
+
               return (
                 <li key={link.name} className="relative group">
                   <NavLink to={link.path} className="transition-colors duration-300">
                     {link.name}
                   </NavLink>
 
-                  {/* Collection Dropdown */}
-                  {isCollection && (
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-white border border-gray-200 shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-300 z-50 rounded-lg">
-                      <div className="grid grid-cols-3 divide-x divide-gray-200 text-center p-3">
-                        {collectionSections.map((section) => (
-                          <NavLink
-                            key={section}
-                            to={`/collection/${section.toLowerCase()}`}
-                            className="py-1 px-2 rounded-lg hover:bg-yellow-50 hover:text-yellow-600 font-semibold text-base transition-all duration-200 transform hover:scale-105"
-                          >
-                            {section}
-                          </NavLink>
-                        ))}
+                  {/* Dropdown for categories */}
+                  {isCategory && subCategories.length > 0 && (
+                    <div
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 rounded-lg z-50"
+                    >
+                      <div className="flex flex-col p-3 space-y-1 text-center">
+                        {subCategories
+                          .filter((value, index, self) => self.indexOf(value) === index) // remove duplicates
+                          .map((sub) => (
+                            <NavLink
+                              key={sub}
+                              to={`/collection/${link.name.toLowerCase()}/${sub.toLowerCase()}`}
+                              className="py-2 px-3 rounded-md hover:bg-yellow-50 hover:text-yellow-600 transition-colors duration-200"
+                            >
+                              {sub}
+                            </NavLink>
+                          ))}
                       </div>
                     </div>
                   )}
 
+
                   {/* Active underline */}
                   <span
-                    className={`absolute left-0 -bottom-1 h-0.5 bg-yellow-500 transition-all duration-300 ${location.pathname === link.path ? "w-full" : "w-0 group-hover:w-full"
+                    className={`absolute left-0 -bottom-1 h-0.5 bg-yellow-500 transition-all duration-300 ${location.pathname.startsWith(link.path)
+                      ? "w-full"
+                      : "w-0 group-hover:w-full"
                       }`}
-                  ></span>
+                  />
                 </li>
               );
             })}
@@ -117,51 +149,29 @@ const Navbar = () => {
 
           {/* Icons */}
           <div className="flex items-center space-x-6 text-2xl">
-            {/* Search */}
-            <NavLink
-              to="/search"
-              className={({ isActive }) =>
-                `cursor-pointer transition-colors duration-300 ${isActive ? "text-yellow-600" : "hover:text-yellow-500"
-                }`
-              }
-            >
+            <NavLink to="/search">
               <HiOutlineSearch />
             </NavLink>
 
-            {/* Wishlist */}
-            <NavLink to="/wishlist" className={({ isActive }) =>
-              ` relative cursor-pointer transition-colors duration-300 ${isActive ? "text-yellow-600" : "hover:text-yellow-500"
-              }`
-            }>
-              <FaRegHeart size={22} />
+            <NavLink to="/wishlist" className="relative">
+              <FaRegHeart />
               {wishlistItems.length > 0 && (
-                <span className="absolute -top-2 -right-3 bg-yellow-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 w-5 h-5 bg-yellow-500 text-white text-xs rounded-full flex items-center justify-center">
                   {wishlistItems.length}
                 </span>
               )}
             </NavLink>
 
-            {/* Cart */}
-            <NavLink to="/cart" className={({ isActive }) =>
-              ` relative cursor-pointer transition-colors duration-300 ${isActive ? "text-yellow-600" : "hover:text-yellow-500"
-              }`
-            }>
+            <NavLink to="/cart" className="relative">
               <HiOutlineShoppingBag />
               {cartItems.length > 0 && (
-                <span className="absolute -top-2 -right-2.5 bg-yellow-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 w-5 h-5 bg-yellow-500 text-white text-xs rounded-full flex items-center justify-center">
                   {cartItems.length}
                 </span>
               )}
             </NavLink>
 
-            {/* Account */}
-            <NavLink
-              to="/signin"
-              className={({ isActive }) =>
-                `cursor-pointer transition-colors duration-300 ${isActive ? "text-yellow-600" : "hover:text-yellow-500"
-                }`
-              }
-            >
+            <NavLink to="/signin">
               <RiUser3Line />
             </NavLink>
           </div>
@@ -261,110 +271,76 @@ const Navbar = () => {
             <HiOutlineChevronDown className="h-6 w-6" />
           </button>
         </div>
+        {/* Categories: Men / Women / Kids with dropdown */}
+        <div className="px-4 flex flex-col space-y-2">
+          {["Men", "Women", "Kids"].map((cat) => {
+            const subCategories = getSubCategories(cat);
+            const [open, setOpen] = useState(false);
 
-        {/* Collection & Sections */}
-        <div className="mb-4 px-4">
-          <NavLink
-            to="/collection"
-            className={`py-3 px-2 rounded-lg font-semibold transition-all duration-200 flex justify-between items-center -ml-0.5 ${location.pathname === "/collection"
-              ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600" // active
-              : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700" // inactive
-              }`}
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Collection
-            <span className="text-yellow-600 font-bold mr-0.2">
-              <TbCircleArrowRightFilled />
-            </span>
-          </NavLink>
-        </div>
+            return (
+              <div key={cat} className="flex flex-col">
+                {/* Category header with arrow */}
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="py-3 px-2 rounded-lg font-semibold flex justify-between items-center w-full text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200"
+                >
+                  {cat}
+                  <HiOutlineChevronDown
+                    className={`h-5 w-5 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+                  />
+                </button>
 
-        <div className="mb-4 px-4 flex flex-col space-y-2">
-          {collectionSections.map((section) => (
-            <NavLink
-              key={section}
-              to={`/collection/${section.toLowerCase()}`}
-              className={`py-3 px-2 rounded-lg font-medium transition-all duration-200 flex justify-between items-center ${location.pathname === `/collection/${section.toLowerCase()}`
-                ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600"
-                : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700"
-                }`}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {section}
-              <span className="text-yellow-600 font-bold">
-                <TbCircleArrowRightFilled />
-              </span>
-            </NavLink>
-          ))}
+                {/* Smooth Subcategories */}
+                <div
+                  className="overflow-hidden transition-all duration-300"
+                  style={{ maxHeight: open ? `${subCategories.length * 40}px` : "0px" }}
+                >
+                  <div className="flex flex-col pl-4 space-y-1">
+                    {subCategories.map((sub) => (
+                      <NavLink
+                        key={sub}
+                        to={`/collection/${cat.toLowerCase()}/${sub.toLowerCase()}`}
+                        className="py-2 px-2 rounded-md hover:bg-yellow-50 hover:text-yellow-600 transition-colors duration-200 block"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {sub}
+                      </NavLink>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Wishlist */}
-        <div className="px-4">
+        <div className="px-4 mt-3">
           <NavLink
             to="/wishlist"
-            className={`relative py-3 px-2 rounded-lg font-medium transition-all duration-200 flex justify-between items-center mt-2 ${location.pathname === "/wishlist"
-              ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600"
-              : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700"
-              }`}
+            className={`relative py-3 px-2 rounded-lg font-medium flex justify-between items-center text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200`}
             onClick={() => setMobileMenuOpen(false)}
           >
             Wishlist
-            <span className={`text-yellow-600 font-bold`}>
+            <span className="text-yellow-600 font-bold">
               <FaRegHeart className="h-5 w-5" />
             </span>
             {wishlistItems.length > 0 && (
-              <span
-                className={`absolute top-1.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors duration-200 bg-yellow-500 text-white
-                  `}
-              >
+              <span className="absolute top-1.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors duration-200 bg-yellow-500 text-white">
                 {wishlistItems.length}
               </span>
             )}
           </NavLink>
         </div>
 
-        {/* About / Contact / Track Order */}
-        <div className="px-4 flex flex-col space-y-2">
+        {/* Track Order */}
+        <div className="px-4 flex flex-col space-y-2 mt-2">
           <NavLink
-            to="/trackorder"
-            className={`relative py-3 px-2 rounded-lg font-medium transition-all duration-200 flex justify-between items-center mt-2 ${location.pathname === "/trackorder"
-              ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600"
-              : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700"
-              }`}
+            to={`/trackorder/${trackingId}`}
+            className="py-3 px-2 rounded-lg font-medium flex justify-between items-center text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 transition-all duration-200 mb-2"
             onClick={() => setMobileMenuOpen(false)}
           >
             Track Your Order
-            <span className="text-yellow-600 font-bold">
-              <TbCircleArrowRightFilled />
-            </span>
-          </NavLink>
-
-          <NavLink
-            to="/about"
-            className={`py-3 px-2 rounded-lg font-medium transition-all duration-200 flex justify-between items-center ${location.pathname === "/about"
-              ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600"
-              : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700"
-              }`}
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            About
-            <span className="text-yellow-600 font-bold">
-              <TbCircleArrowRightFilled />
-            </span>
-          </NavLink>
-
-          <NavLink
-            to="/contact"
-            className={`py-3 px-2 rounded-lg font-medium transition-all duration-200 flex justify-between items-center mb-3 ${location.pathname === "/contact"
-              ? "bg-yellow-50 hover:text-yellow-600 text-yellow-600"
-              : "hover:bg-yellow-50 hover:text-yellow-600 text-gray-700"
-              }`}
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Contact
-            <span className="text-yellow-600 font-bold">
-              <TbCircleArrowRightFilled />
-            </span>
+            <TbCircleArrowRightFilled className="text-yellow-600 h-5 w-5" />
           </NavLink>
         </div>
       </div>

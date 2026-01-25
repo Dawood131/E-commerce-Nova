@@ -43,9 +43,14 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center text-gray-900">
+      <div className="md:hidden w-full flex justify-center items-center py-2">
+        <NavLink to="/">
+          <img src="/logo-header.png" alt="Logo" className="h-14 w-auto" />
+        </NavLink>
+      </div>
       <Header />
 
-      <div className="flex-1 flex flex-col items-center justify-center w-full px-4 py-12">
+      <div className="flex-1 flex flex-col items-center justify-center w-full px-4 py-12 md:mt-0 -mt-30">
         {/* Card */}
         <div className="w-full max-w-md bg-white p-8 border border-gray-200 shadow-md rounded-xl">
           {/* Heading */}
@@ -73,8 +78,8 @@ const ForgotPassword = () => {
               />
               <label
                 className={`absolute left-0 text-gray-400 text-sm transition-all font-semibold ${isFilled()
-                    ? "-top-4 text-xs text-[#d4af37]"
-                    : "top-2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-3 peer-focus:text-[#d4af37] peer-focus:text-xs"
+                  ? "-top-4 text-xs text-[#d4af37]"
+                  : "top-2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-3 peer-focus:text-[#d4af37] peer-focus:text-xs"
                   }`}
               >
                 Email

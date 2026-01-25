@@ -44,7 +44,7 @@ const ProductPage = () => {
       addToCart({
         ...product,
         qty,
-        size: selectedSize,
+        selectedSize: selectedSize,
       })
     );
 
