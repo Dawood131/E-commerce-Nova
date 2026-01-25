@@ -104,7 +104,8 @@ const Navbar = () => {
           {/* Links */}
           <ul className="flex space-x-12 font-medium text-lg relative">
             {desktopLinks.map((link) => {
-              const isCollection = link.name === "Collection";
+              const isCategory = ["Men", "Women", "Kids"].includes(link.name);
+              const subCategories = isCategory ? getSubCategories(link.name) : [];
 
               return (
                 <li key={link.name} className="relative group">
@@ -115,17 +116,17 @@ const Navbar = () => {
                     {link.name}
                   </NavLink>
 
-                  {/* Collection Dropdown */}
-                  {isCollection && (
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white border border-gray-200 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 rounded-lg">
-                      <div className="grid grid-cols-3 divide-x divide-gray-200 text-center p-3">
-                        {collectionSections.map((section) => (
+                  {/* Dropdown for categories */}
+                  {isCategory && subCategories.length > 0 && (
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 rounded-lg z-50">
+                      <div className="flex flex-col p-3 space-y-1 text-center">
+                        {subCategories.map((sub) => (
                           <NavLink
-                            key={section}
-                            to={`/collection/${section.toLowerCase()}`}
-                            className="py-1 px-2 rounded-lg hover:bg-yellow-50 hover:text-yellow-600 font-semibold text-base transition-all duration-200 transform hover:scale-105"
+                            key={sub}
+                            to={`/collection/${link.name.toLowerCase()}/${sub.toLowerCase()}`}
+                            className="py-2 px-3 rounded-md hover:bg-yellow-50 hover:text-yellow-600 transition-colors duration-200"
                           >
-                            {section}
+                            {sub}
                           </NavLink>
                         ))}
                       </div>
@@ -135,8 +136,8 @@ const Navbar = () => {
                   {/* Active / Hover underline */}
                   <span
                     className={`absolute left-0 -bottom-1 h-0.5 bg-yellow-500 transition-all duration-300 ${location.pathname === link.path
-                        ? "w-full"
-                        : "w-0 group-hover:w-full"
+                      ? "w-full"
+                      : "w-0 group-hover:w-full"
                       }`}
                   />
                 </li>
