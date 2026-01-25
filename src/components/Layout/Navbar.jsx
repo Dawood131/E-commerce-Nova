@@ -97,49 +97,46 @@ const Navbar = () => {
       >
         <div className="container mx-auto px-6 py-2 flex items-center justify-between h-20">
           {/* Logo */}
-          <NavLink to="/">
+          <NavLink to="/" className="flex-shrink-0">
             <img src="/logo-header.png" alt="Logo" className="h-14 w-auto" />
           </NavLink>
 
           {/* Links */}
-          <ul className="flex space-x-12 font-medium text-lg">
+          <ul className="flex space-x-12 font-medium text-lg relative">
             {desktopLinks.map((link) => {
-              const isCategory = ["Men", "Women", "Kids"].includes(link.name);
-              const subCategories = isCategory ? getSubCategories(link.name) : [];
+              const isCollection = link.name === "Collection";
 
               return (
                 <li key={link.name} className="relative group">
-                  <NavLink to={link.path} className="transition-colors duration-300">
+                  <NavLink
+                    to={link.path}
+                    className="text-gray-700 hover:text-yellow-600 transition-colors duration-300"
+                  >
                     {link.name}
                   </NavLink>
 
-                  {/* Dropdown for categories */}
-                  {isCategory && subCategories.length > 0 && (
-                    <div
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-white shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 rounded-lg z-50"
-                    >
-                      <div className="flex flex-col p-3 space-y-1 text-center">
-                        {subCategories
-                          .filter((value, index, self) => self.indexOf(value) === index) // remove duplicates
-                          .map((sub) => (
-                            <NavLink
-                              key={sub}
-                              to={`/collection/${link.name.toLowerCase()}/${sub.toLowerCase()}`}
-                              className="py-2 px-3 rounded-md hover:bg-yellow-50 hover:text-yellow-600 transition-colors duration-200"
-                            >
-                              {sub}
-                            </NavLink>
-                          ))}
+                  {/* Collection Dropdown */}
+                  {isCollection && (
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white border border-gray-200 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 rounded-lg">
+                      <div className="grid grid-cols-3 divide-x divide-gray-200 text-center p-3">
+                        {collectionSections.map((section) => (
+                          <NavLink
+                            key={section}
+                            to={`/collection/${section.toLowerCase()}`}
+                            className="py-1 px-2 rounded-lg hover:bg-yellow-50 hover:text-yellow-600 font-semibold text-base transition-all duration-200 transform hover:scale-105"
+                          >
+                            {section}
+                          </NavLink>
+                        ))}
                       </div>
                     </div>
                   )}
 
-
-                  {/* Active underline */}
+                  {/* Active / Hover underline */}
                   <span
-                    className={`absolute left-0 -bottom-1 h-0.5 bg-yellow-500 transition-all duration-300 ${location.pathname.startsWith(link.path)
-                      ? "w-full"
-                      : "w-0 group-hover:w-full"
+                    className={`absolute left-0 -bottom-1 h-0.5 bg-yellow-500 transition-all duration-300 ${location.pathname === link.path
+                        ? "w-full"
+                        : "w-0 group-hover:w-full"
                       }`}
                   />
                 </li>
@@ -149,34 +146,57 @@ const Navbar = () => {
 
           {/* Icons */}
           <div className="flex items-center space-x-6 text-2xl">
-            <NavLink to="/search">
+            {/* Search */}
+            <NavLink
+              to="/search"
+              className={({ isActive }) =>
+                `cursor-pointer transition-colors duration-300 ${isActive ? "text-yellow-600" : "hover:text-yellow-500"
+                }`
+              }
+            >
               <HiOutlineSearch />
             </NavLink>
 
-            <NavLink to="/wishlist" className="relative">
-              <FaRegHeart />
+            {/* Wishlist */}
+            <NavLink to="/wishlist" className={({ isActive }) =>
+              ` relative cursor-pointer transition-colors duration-300 ${isActive ? "text-yellow-600" : "hover:text-yellow-500"
+              }`
+            }>
+              <FaRegHeart size={22} />
               {wishlistItems.length > 0 && (
-                <span className="absolute -top-2 -right-2 w-5 h-5 bg-yellow-500 text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-3 bg-yellow-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                   {wishlistItems.length}
                 </span>
               )}
             </NavLink>
 
-            <NavLink to="/cart" className="relative">
+            {/* Cart */}
+            <NavLink to="/cart" className={({ isActive }) =>
+              ` relative cursor-pointer transition-colors duration-300 ${isActive ? "text-yellow-600" : "hover:text-yellow-500"
+              }`
+            }>
               <HiOutlineShoppingBag />
               {cartItems.length > 0 && (
-                <span className="absolute -top-2 -right-2 w-5 h-5 bg-yellow-500 text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2.5 bg-yellow-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                   {cartItems.length}
                 </span>
               )}
             </NavLink>
 
-            <NavLink to="/signin">
+            {/* Account */}
+            <NavLink
+              to="/signin"
+              className={({ isActive }) =>
+                `cursor-pointer transition-colors duration-300 ${isActive ? "text-yellow-600" : "hover:text-yellow-500"
+                }`
+              }
+            >
               <RiUser3Line />
             </NavLink>
           </div>
         </div>
       </nav>
+
 
       {/* Mobile Navbar */}
       {location.pathname === "/" && (
@@ -241,8 +261,6 @@ const Navbar = () => {
                     {wishlistItems.length}
                   </span>
                 )}
-
-
               </NavLink>
             );
           })}
