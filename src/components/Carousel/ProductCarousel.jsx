@@ -208,6 +208,15 @@ const ProductCarousel = ({ products = [] }) => {
       <div className="mb-10">
         <Headings highlight="Best" heading="Sellers" />
       </div>
+      <div className="w-full h-[300px] sm:h-[380px] md:h-[480px] lg:h-[640px]
+            overflow-hidden rounded-2xl mb-12">
+        <img
+          src="/products/Gemini_Generated_Image_lux0r2lux0r2lux0.png"
+          alt="Best Sellers"
+          className="w-full h-full object-cover object-center"
+        />
+      </div>
+
 
       {/* HOVER / TOUCH STOP */}
       <div
