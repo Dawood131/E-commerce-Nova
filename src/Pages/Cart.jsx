@@ -27,7 +27,12 @@ const CartPage = () => {
 
   const confirmMoveToWishlist = () => {
     dispatch(toggleWishlist(selectedProduct));
-    dispatch(removeFromCart(selectedProduct.id));
+    dispatch(
+      removeFromCart({
+        id: selectedProduct.id,
+        selectedSize: selectedProduct.selectedSize,
+      })
+    );
     setShowWishlistConfirm(false);
     setSelectedProduct(null);
   };
@@ -39,10 +44,11 @@ const CartPage = () => {
 
 
 
-  const handleRemoveClick = (id) => {
-    setDeleteId(id);
+  const handleRemoveClick = (id, selectedSize) => {
+    setDeleteId({ id, selectedSize });
     setShowConfirm(true);
   };
+
 
   const confirmDelete = () => {
     dispatch(removeFromCart(deleteId));
@@ -55,18 +61,18 @@ const CartPage = () => {
     setDeleteId(null);
   };
 
-  const handleQuantityChange = (id, quantity) => {
+  const handleQuantityChange = (id, selectedSize, quantity) => {
     if (quantity < 1 || quantity > 5) return;
-    dispatch(updateQuantity({ id, quantity }));
+    dispatch(updateQuantity({ id, selectedSize, quantity }));
   };
+
 
   const subtotal = cart.reduce(
     (acc, product) => acc + product.price * product.quantity,
     0
   );
   const salesTax = subtotal * 0.15;
-  const fbrCharges = 1;
-  const total = subtotal + salesTax + fbrCharges;
+  const total = subtotal + salesTax;
 
   if (cart.length === 0) {
     return (
@@ -139,12 +145,13 @@ const CartPage = () => {
               <div className="flex flex-row items-start gap-4">
 
                 {/* Product Image */}
-                <img
-                  src={product.image?.[0] || "/placeholder.png"}
-                  alt={product.name}
-                  className="w-24 h-24 md:w-36 md:h-36 object-cover rounded-lg flex-shrink-0"
-                />
-
+                <NavLink to={`/product/${product.id}`}>
+                  <img
+                    src={product.image?.[0] || "/placeholder.png"}
+                    alt={product.name}
+                    className="w-24 h-24 md:w-36 md:h-36 object-cover rounded-lg flex-shrink-0"
+                  />
+                </NavLink>
                 {/* Product Info + Quantity */}
                 <div className="flex-1 flex flex-col justify-between gap-2">
 
@@ -152,13 +159,15 @@ const CartPage = () => {
                   {/* Top Row: Name, Price, Size, Stock */}
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-semibold text-gray-800 md:text-lg text-sm line-clamp-2">
-                        {product.name || "Unnamed Product"}
-                      </h3>
+                      <NavLink to={`/product/${product.id}`}>
+                        <h3 className="font-semibold text-gray-800 md:text-lg text-sm line-clamp-2 hover:underline">
+                          {product.name || "Unnamed Product"}
+                        </h3>
+                      </NavLink>
                       <p className="text-gray-800 font-bold text-sm md:text-base">
                         ${product.price?.toFixed(2) || "0.00"}
                       </p>
-                      <p className="text-gray-600 text-sm">Size: <span className="font-bold">{product.selectedSize  || "N/A"}</span></p>
+                      <p className="text-gray-600 text-sm">Size: <span className="font-bold">{product.selectedSize || "N/A"}</span></p>
                       <p className="text-green-600 font-medium text-sm">In Stock</p>
 
                       <button
@@ -174,7 +183,7 @@ const CartPage = () => {
 
                     {/* Trash Button Top-Right */}
                     <button
-                      onClick={() => handleRemoveClick(product.id)}
+                      onClick={() => handleRemoveClick(product.id, product.selectedSize)}
                       className="flex items-center justify-center text-black hover:text-yellow-500 transition p-1 -mt-0.5 rounded-full cursor-pointer"
                     >
                       <GoTrash size={20} />
@@ -187,7 +196,11 @@ const CartPage = () => {
                       {/* Minus */}
                       <button
                         onClick={() =>
-                          handleQuantityChange(product.id, product.quantity - 1)
+                          handleQuantityChange(
+                            product.id,
+                            product.selectedSize,
+                            product.quantity - 1
+                          )
                         }
                         className={`flex items-center justify-center px-3 py-2 bg-gray-100 cursor-pointer transition text-gray-700 rounded-md ${product.quantity === 1
                           ? "opacity-50 cursor-not-allowed"
@@ -204,7 +217,11 @@ const CartPage = () => {
                       {/* Plus */}
                       <button
                         onClick={() =>
-                          handleQuantityChange(product.id, product.quantity + 1)
+                          handleQuantityChange(
+                            product.id,
+                            product.selectedSize,
+                            product.quantity + 1
+                          )
                         }
                         className={`flex items-center justify-center px-3 py-2 bg-gray-100 cursor-pointer transition text-gray-700 rounded-md ${product.quantity === 5
                           ? "opacity-50 cursor-not-allowed"

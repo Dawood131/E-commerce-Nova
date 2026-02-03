@@ -3,7 +3,7 @@ import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import ProductCard from "../Products/ProductCard";
 import Headings from "../Headings/Headings";
 
-const GAP = 20;
+const GAP = 10;
 const AUTO_DELAY = 3000;
 
 const ProductCarousel = ({ products = [] }) => {
@@ -33,7 +33,7 @@ const ProductCarousel = ({ products = [] }) => {
       const w = window.innerWidth;
 
       if (w >= 1280) {
-        setCardsPerView(6);
+        setCardsPerView(5);
         setScrollStep(1);
       } else if (w >= 1024) {
         setCardsPerView(5);
@@ -255,7 +255,7 @@ const ProductCarousel = ({ products = [] }) => {
                   width: `calc((100% - ${(cardsPerView - 1) * GAP}px) / ${cardsPerView})`,
                 }}
               >
-                <ProductCard product={product} small />
+                <ProductCard product={product} />
               </div>
             ))}
           </div>

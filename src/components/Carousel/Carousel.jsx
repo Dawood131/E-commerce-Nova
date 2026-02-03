@@ -8,9 +8,9 @@ import MainBtn from "../Button/MainBtn";
 
 const slides = [
   { image: allImg, title: "New Collection 2026", subtitle: "A bold step into the future of fashion — redefine your look today with our latest styles.", btn: "Shop Collection", path: "/collection" },
-  { image: manImg, title: "Men’s Collection", subtitle: "Discover modern, confident, and bold looks — crafted for today’s men.", btn: "Shop Men", path: "/male" },
-  { image: womanImg, title: "Women’s Collection", subtitle: "Where elegance meets comfort. Find outfits that define your grace.", btn: "Shop Women", path: "/female" },
-  { image: kidsImg, title: "Children’s Wear", subtitle: "Bright, fun, and made for movement — fashion your kids will love.", btn: "Shop Kids", path: "/children" },
+  { image: manImg, title: "Men’s Collection", subtitle: "Discover modern, confident, and bold looks — crafted for today’s men.", btn: "Shop Men", path: "/men" },
+  { image: womanImg, title: "Women’s Collection", subtitle: "Where elegance meets comfort. Find outfits that define your grace.", btn: "Shop Women", path: "/women" },
+  { image: kidsImg, title: "Children’s Wear", subtitle: "Bright, fun, and made for movement — fashion your kids will love.", btn: "Shop Kids", path: "/kids" },
 ];
 
 

@@ -8,9 +8,11 @@ import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai"
 import MainBtn from "../components/Button/MainBtn";
 import ProductCard from "../components/Products/ProductCard";
 import { openModal } from "../redux/uiModalSlice";
-
+import productsData from "../components/data/products";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { useSwipeable } from "react-swipeable";
+import { toast } from "sonner";
+import { store } from "../redux/store";
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -43,27 +45,48 @@ const ProductPage = () => {
   const keyPoints = staticProductInfo[categoryKey]?.[subCategoryKey]?.keyPoints || [];
 
   const handleAddToCart = () => {
+    if (!selectedSize) {
+      toast("Please select a size");
+      return;
+    }
+
     dispatch(
       addToCart({
         ...product,
         qty,
-        selectedSize: selectedSize,
+        selectedSize,
       })
     );
 
     dispatch(
       openModal({
         type: "cart",
-        product: product,
+        product: {
+          ...product,
+          selectedSize,
+          qty,
+        },
       })
     );
   };
 
+
   useEffect(() => {
-    if (product?.sizes?.length > 0) {
-      setSelectedSize(product.sizes[0]);
+    if (product) {
+      // 1️⃣ Set the default selected size
+      if (product.sizes?.length > 0) {
+        setSelectedSize(product.sizes[0]);
+      }
+
+      // 2️⃣ Scroll to top when product changes
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth", // optional for smooth scrolling
+      });
     }
   }, [product]);
+
+
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
@@ -229,7 +252,7 @@ const ProductPage = () => {
                       key={size}
                       onClick={() => setSelectedSize(size)}
                       className={`w-11 h-11 flex items-center justify-center rounded-lg text-sm font-semibold transition-all duration-200
-                ${selectedSize === size ? "bg-yellow-500 text-white shadow-lg scale-105" : "bg-white text-gray-800 border border-gray-300 hover:border-yellow-500 hover:text-yellow-600"}`}
+                ${selectedSize === size ? "bg-yellow-500 text-white shadow-lg scale-105" : "bg-white text-gray-800 border border-gray-300 hover:border-yellow-500 hover:text-yellow-600 cursor-pointer"}`}
                     >
                       {size}
                     </button>
@@ -245,7 +268,7 @@ const ProductPage = () => {
                   <button
                     onClick={() => handleQuantityChange(qty - 1)}
                     disabled={qty === 1}
-                    className={`px-3 py-2 transition bg-gray-100 ${qty === 1 ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:text-yellow-500"}`}
+                    className={`px-3 py-2 transition bg-gray-100 ${qty === 1 ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:text-yellow-500 cursor-pointer"}`}
                   >
                     <AiOutlineMinus size={16} />
                   </button>
@@ -253,7 +276,7 @@ const ProductPage = () => {
                   <button
                     onClick={() => handleQuantityChange(qty + 1)}
                     disabled={qty === 5}
-                    className={`px-3 py-2 transition bg-gray-100 ${qty === 5 ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:text-yellow-500"}`}
+                    className={`px-3 py-2 transition bg-gray-100 ${qty === 5 ? "text-gray-400 cursor-not-allowed" : "text-gray-700 hover:text-yellow-500 cursor-pointer"}`}
                   >
                     <AiOutlinePlus size={16} />
                   </button>
@@ -283,11 +306,17 @@ const ProductPage = () => {
         <h2 className="text-xl md:text-2xl font-semibold mb-6">You May Also Like</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {products
-            .filter(p => p.category === product.category && p.id !== product.id)
+          {productsData
+            .filter(
+              (p) =>
+                p.category === product.category &&
+                p.subCategory === product.subCategory &&
+                p.id !== product.id
+            )
             .slice(0, 4)
-            .map(p => <ProductCard key={p.id} product={p} />)
-          }
+            .map((p) => (
+              <ProductCard key={p.id} product={p} viewMode="grid" />
+            ))}
         </div>
       </div>
 

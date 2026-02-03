@@ -7,7 +7,7 @@ import { toggleWishlist } from "../../redux/wishlistSlice";
 import { openModal } from "../../redux/uiModalSlice";
 import { NavLink } from "react-router-dom";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, viewMode }) => {
   const dispatch = useDispatch();
   const wishlist = useSelector((state) => state.wishlist.items);
   const cart = useSelector((state) => state.cart.items);
@@ -18,7 +18,9 @@ const ProductCard = ({ product }) => {
 
   const cartItem = cart.find((item) => item.id === product.id);
   const selectedSize = cartItem?.selectedSize || "";
-  const isInCart = cartItem?.isInCart || false;
+  const [localSelectedSize, setLocalSelectedSize] = useState(cartItem?.selectedSize || "");
+  const isInCart = !!cartItem;
+
   const isWishlisted = wishlist.some((item) => item.id === product.id);
 
   const price = product.new_price || product.price;
@@ -27,20 +29,18 @@ const ProductCard = ({ product }) => {
 
   // ================= CART SIZE SELECT =================
   const handleSizeSelect = (size) => {
-    const cartItem = cart.find((item) => item.id === product.id);
+    const cartProduct = {
+      ...product,
+      selectedSize: size,
+    };
 
-    if (cartItem && cartItem.selectedSize === size) {
-      dispatch(removeFromCart(product.id));
-      setShowSizeSelector(false);
-      return;
-    }
-
-    const cartProduct = { ...product, selectedSize: size };
     dispatch(addToCart(cartProduct));
     dispatch(openModal({ type: "cart", product: cartProduct }));
+
+    // Update local selection
+    setLocalSelectedSize(size);
     setShowSizeSelector(false);
   };
-
 
   // ================= WISHLIST =================
   const handleWishlistClick = () => {
@@ -72,16 +72,22 @@ const ProductCard = ({ product }) => {
 
   // ================= JSX =================
   return (
-    <div className="group relative w-full">
+    <div className="group relative w-full mb-3">
       {/* IMAGE */}
       <div className="relative overflow-hidden rounded-md">
         <NavLink to={`/product/${product.id}`}>
-          <img
-            src={image}
-            alt={product.name}
-            className="w-full h-[220px] sm:h-[250px] md:h-[280px] lg:h-[310px] object-cover transition-all duration-500 group-hover:scale-105"
-            loading="eager"
-          />
+          <div
+            className={`relative w-full overflow-hidden rounded-lg ${viewMode === "list" ? "aspect-[6/5]" : "aspect-[3/4]"
+              }`}
+          >
+            <img
+              src={image}
+              alt={name}
+              className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+              loading="eager"
+            />
+          </div>
+
         </NavLink>
         {/* WISHLIST BUTTON */}
         <button
@@ -114,28 +120,34 @@ const ProductCard = ({ product }) => {
             <button
               className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md transition
         ${isInCart ? "bg-yellow-500 text-white" : "bg-white text-gray-700 hover:bg-yellow-400 hover:text-white"}`}
-              onClick={() => window.innerWidth < 768 && setShowSizeSelector(true)} // click only on mobile
+              onClick={() => window.innerWidth < 768 && setShowSizeSelector(true)}
             >
               <TbShoppingBagPlus size={20} />
             </button>
           )}
 
           {showSizeSelector && product.sizes?.length > 0 && (
-            <div className="flex space-x-1 bg-yellow-50 px-2 py-1 rounded-full shadow-sm md:ml-0 -ml-2">
-              {product.sizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => handleSizeSelect(size)}
-                  className={`md:w-9 w-8 md:h-9 h-8 md:ml-0 -ml-0.5 rounded-full text-sm font-medium transition
-            ${selectedSize === size
-                      ? "bg-yellow-400 text-white"
-                      : "bg-white text-gray-700 hover:bg-yellow-400 hover:text-white"
-                    }`}
-                >
-                  {size}
-                </button>
-              ))}
+            <div className="flex space-x-1 bg-white px-2 py-1 rounded-full shadow-sm md:ml-0 -ml-2">
+              {product.sizes.map((size) => {
+                // Check if this size is already in the cart for this product
+                const isSizeInCart = cart.some(
+                  (item) => item.id === product.id && item.selectedSize === size
+                );
 
+                return (
+                  <button
+                    key={size}
+                    onClick={() => handleSizeSelect(size)}
+                    className={`md:w-9 w-8 md:h-9 h-8 rounded-full text-sm shadow-md font-medium transition
+        ${isSizeInCart
+                        ? "bg-yellow-400 text-white"
+                        : "bg-white text-gray-700 hover:bg-yellow-400 hover:text-white"
+                      }`}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>

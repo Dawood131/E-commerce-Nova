@@ -5,7 +5,7 @@ import Footer from "../components/Layout/Footer";
 import MainBtn from "../components/Button/MainBtn";
 import { useNavigate, NavLink, } from "react-router-dom";
 import { toast } from "sonner";
-import { removeFromCart } from "../redux/cartSlice";
+import { clearCart } from "../redux/cartSlice";
 import Select from "react-select";
 import { v4 as uuidv4 } from "uuid";
 
@@ -125,7 +125,7 @@ const CheckoutPage = () => {
 
         if (!loggedInUser) {
             toast.error("Please sign in or create an account to place your order.");
-            navigate("/signin"); // ya /login
+            navigate("/signin");
             return;
         }
 
@@ -159,7 +159,7 @@ const CheckoutPage = () => {
             `novaLastTrackingId_${loggedInUser.email}`,
             id
         );
-        cart.forEach(item => dispatch(removeFromCart(item.id)));
+        dispatch(clearCart());
         setShowSuccess(true);
     };
 
@@ -180,9 +180,11 @@ const CheckoutPage = () => {
         }),
         option: (base, state) => ({
             ...base,
-            backgroundColor: state.isFocused || state.isSelected
-                ? "#f3f4f6"
-                : "white",
+            backgroundColor: state.isFocused
+                ? "#f3f4f6" // hover
+                : state.isSelected
+                    ? "#fef3c7" // selected
+                    : "white",
             color: state.isFocused || state.isSelected ? "black" : "#333",
             cursor: "pointer",
             "&:active": {
@@ -650,14 +652,14 @@ const CheckoutPage = () => {
 
             {/* Success Modal */}
             {showSuccess && (
-                <div className="fixed inset-0 z-500 flex items-center justify-center bg-black/50 px-4">
-                    <div className="bg-white w-full sm:w-96 md:w-[28rem] rounded-2xl shadow-2xl p-6 sm:p-8 animate-scaleIn">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+                    <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 md:p-12 max-w-xl w-full animate-scaleIn">
 
-                        {/* Icon */}
-                        <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-green-100">
+                        {/* Success Icon */}
+                        <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center rounded-full bg-green-100 shadow-inner">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-10 w-10 text-green-500"
+                                className="h-14 w-14 text-green-500"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -668,40 +670,39 @@ const CheckoutPage = () => {
                         </div>
 
                         {/* Heading */}
-                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 text-center">
-                            Order Placed Successfully! 🎉
-                        </h3>
+                        <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center mb-3">
+                            Order Placed Successfully!
+                        </h2>
 
-                        {/* Description */}
-                        <p className="text-sm sm:text-base text-gray-600 mb-4 leading-relaxed text-center">
-                            Your order has been placed successfully.
+                        {/* Subheading */}
+                        <p className="text-gray-600 text-center mb-5 text-lg">
+                            Thank you for your purchase. Your order is confirmed.
                         </p>
 
                         {/* Tracking ID */}
-                        <p className="text-sm sm:text-base text-gray-700 mb-6 text-center">
-                            <span className="font-semibold">Tracking ID:</span> {trackingId}
-                        </p>
+                        <div className="text-center mb-8">
+                            <span className="text-gray-700 font-semibold">Tracking ID:</span>{" "}
+                            <span className="text-yellow-500 font-bold text-xl">{trackingId}</span>
+                        </div>
 
                         {/* Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-3">
-                            {/* Track Order */}
+                        <div className="flex flex-col sm:flex-row gap-4">
                             <button
                                 onClick={() => {
                                     setShowSuccess(false);
                                     navigate(`/trackorder/${trackingId}`);
                                 }}
-                                className="flex-1 py-3 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition cursor-pointer"
+                                className="flex-1 py-4 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition cursor-pointer"
                             >
                                 Track Order
                             </button>
 
-                            {/* Go Home */}
                             <button
                                 onClick={() => {
                                     setShowSuccess(false);
                                     navigate("/");
                                 }}
-                                className="flex-1 py-3 rounded-xl bg-black text-white font-semibold hover:bg-yellow-500 hover:text-black transition cursor-pointer"
+                                className="flex-1 py-4 rounded-xl bg-black text-white font-semibold hover:bg-yellow-500 hover:text-black transition cursor-pointer"
                             >
                                 Continue Shopping
                             </button>
@@ -709,8 +710,6 @@ const CheckoutPage = () => {
                     </div>
                 </div>
             )}
-
-
         </div>
     );
 };

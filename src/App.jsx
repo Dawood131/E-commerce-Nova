@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home'
-import Collection from './Pages/Collection'
 import About from './Pages/About'
 import Contact from './Pages/Contact'
 import Cart from './Pages/Cart'
@@ -14,6 +13,8 @@ import ForgotPassword from './Pages/Auth/ForgotPassword';
 import TrackOrder from './Pages/TrackOrder'
 import UiModal from './components/Modals/UiModal';
 import Checkout from './Pages/Checkout';
+import Category from './Pages/Collection/Category';
+import Collection from './Pages/Collection/Collection';
 import { Toaster } from "sonner";
 
 const App = () => {
@@ -23,7 +24,6 @@ const App = () => {
             <Toaster position="top-right" reverseOrder={false} />
             <Routes>
                 <Route path='/' element={<Home />} />
-                <Route path='/collection' element={<Collection />} />
                 <Route path='/search' element={<Search />} />
                 <Route path='/about' element={<About />} />
                 <Route path='/contact' element={<Contact />} />
@@ -34,9 +34,10 @@ const App = () => {
                 <Route path='/signup' element={<SignUp />} />
                 <Route path='/forgot-password' element={<ForgotPassword />} />
                 <Route path='/checkout' element={<Checkout />} />
+                <Route path='/collection' element={<Collection />} />
                 <Route path="/trackorder/:trackingId" element={<TrackOrder />} />
+                <Route path="/:main/:sub?" element={<Category />} />
                 <Route path="*" element={<div>Page Not Found</div>} />
-
             </Routes>
         </div>
     );
