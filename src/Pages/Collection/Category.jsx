@@ -4,6 +4,7 @@ import Header from "../../components/Header/Header";
 import Footer from "../../components/Layout/Footer";
 import productsData from "../../components/data/products";
 import ProductCard from "../../components/Products/ProductCard";
+import ProductList from "../../components/Products/ProductList";
 import Select from "react-select";
 import { MdOutlineFilterList } from "react-icons/md";
 import { Grid4, Grid3, Grid2, List } from "../../assets/Icons";
@@ -169,32 +170,59 @@ const Category = () => {
     setFilteredProducts(sorted);
   }, [sortBy]);
 
+
+  const startDrag = (e) => {
+    isDragging.current = true;
+    const rect = sliderRef.current.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    const clickValue = Math.round(percent * MAX_PRICE);
+    activeThumb.current =
+      Math.abs(clickValue - tempPriceRange[0]) < Math.abs(clickValue - tempPriceRange[1])
+        ? "min"
+        : "max";
+  };
+
+  const startThumbDrag = (e, thumb) => {
+    e.stopPropagation();
+    isDragging.current = true;
+    activeThumb.current = thumb;
+  };
+
   useEffect(() => {
     const move = (e) => {
-      if (!isDragging.current || !activeThumb.current || !sliderRef.current) return;
+      if (!isDragging.current) return;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
       const rect = sliderRef.current.getBoundingClientRect();
-      let percent = (e.clientX - rect.left) / rect.width;
-      percent = Math.max(0, Math.min(1, percent));
-      const newValue = Math.round(percent * MAX_PRICE);
+      let value = Math.round(((clientX - rect.left) / rect.width) * MAX_PRICE);
+      value = Math.max(0, Math.min(MAX_PRICE, value));
 
-      setTempPriceRange((prev) => {
-        if (activeThumb.current === "min") return [Math.min(newValue, prev[1] - MIN_GAP), prev[1]];
-        return [prev[0], Math.max(newValue, prev[0] + MIN_GAP)];
-      });
+      if (activeThumb.current === "min") {
+        if (value > tempPriceRange[1]) value = tempPriceRange[1];
+        setTempPriceRange([value, tempPriceRange[1]]);
+      } else if (activeThumb.current === "max") {
+        if (value < tempPriceRange[0]) value = tempPriceRange[0];
+        setTempPriceRange([tempPriceRange[0], value]);
+      }
     };
 
-    const stop = () => {
+    const end = () => {
       isDragging.current = false;
       activeThumb.current = null;
     };
 
     window.addEventListener("mousemove", move);
-    window.addEventListener("mouseup", stop);
+    window.addEventListener("mouseup", end);
+    window.addEventListener("touchmove", move);
+    window.addEventListener("touchend", end);
+
     return () => {
       window.removeEventListener("mousemove", move);
-      window.removeEventListener("mouseup", stop);
+      window.removeEventListener("mouseup", end);
+      window.removeEventListener("touchmove", move);
+      window.removeEventListener("touchend", end);
     };
-  }, []);
+  }, [tempPriceRange]);
+
 
   useEffect(() => {
     setCurrentSub(sub ? capitalize(sub) : "All Products");
@@ -203,6 +231,13 @@ const Category = () => {
   const totalCategoryProducts = productsData.filter(
     (p) => p.category === capitalize(main)
   ).length;
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }, [main, sub]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -225,8 +260,8 @@ const Category = () => {
       </nav>
 
       {/* Subcategory Circles */}
-      <div className="container mx-auto px-2 py-4 flex justify-start md:justify-center gap-4 md:gap-12 overflow-x-auto hide-scrollbar -mt-5 mb-4">
-        {subCategories.map((subCat, idx) => {
+      <div className="container mx-auto px-2 py-4 flex justify-center md:justify-center gap-4 -mt-5 mb-4 md:gap-x-10">
+        {subCategories.slice(0, 4).map((subCat, idx) => {
           const current = sub ? sub.toLowerCase() : "";
           const normalized = subCat === "All Products" ? "" : subCat.toLowerCase();
           const isActive = current === normalized;
@@ -237,7 +272,7 @@ const Category = () => {
               to={`/${main.toLowerCase()}${normalized ? `/${normalized}` : ""}`}
               className={`flex flex-col items-center cursor-pointer hover:scale-105 transition ${isActive ? "border-b-2 border-black font-semibold" : ""}`}
             >
-              <div className="md:w-24 w-20 md:h-24 h-20 rounded-full bg-gray-200 flex items-center justify-center mb-2 overflow-hidden border border-gray-200">
+              <div className="w-19 md:w-24 h-19 md:h-24 rounded-full bg-gray-200 flex items-center justify-center mb-2 overflow-hidden border border-gray-200">
                 <img
                   src={subCategoryImages[capitalize(main)]?.[subCat] || "/categories/default.png"}
                   alt={subCat}
@@ -251,7 +286,7 @@ const Category = () => {
       </div>
 
       {/* Filter / Sort / View */}
-      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-start md:items-center mb-7 bg-white z-30 gap-3">
+      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-start md:items-center mb-7 bg-white gap-3">
 
         {/* Top Row: Filter (left) + Sort (right) */}
         <div className="flex w-full justify-between items-center md:justify-start md:gap-4">
@@ -357,24 +392,7 @@ const Category = () => {
       </div>
 
       {/* Products Grid */}
-      <main className="flex-1 container mx-auto px-4 mb-10 -mt-3 md:mt-0">
-        {loading ? (
-          <p className="text-center py-12 text-gray-500 text-lg">Loading products...</p>
-        ) : filteredProducts.length === 0 ? (
-          <p className="text-center text-gray-500 mt-12 text-lg mb-12">No products found in this category.</p>
-        ) : (
-          <div className={
-            viewMode === "grid-4" ? "grid grid-cols-2 md:grid-cols-4 gap-4" :
-              viewMode === "grid-3" ? "grid grid-cols-2 md:grid-cols-3 gap-4" :
-                viewMode === "grid-2" ? "grid grid-cols-2 gap-4" :
-                  "grid grid-cols-1 gap-4"
-          }>
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
-      </main>
+      <ProductList products={filteredProducts} viewMode={viewMode} />
 
       <Footer />
 
@@ -483,17 +501,9 @@ const Category = () => {
               </div>
               <div
                 ref={sliderRef}
-                className="relative h-[3px] bg-gray-200 rounded-full cursor-pointer select-none"
-                onMouseDown={(e) => {
-                  isDragging.current = true;
-                  const rect = sliderRef.current.getBoundingClientRect();
-                  const percent = (e.clientX - rect.left) / rect.width;
-                  const clickValue = Math.round(percent * MAX_PRICE);
-                  activeThumb.current =
-                    Math.abs(clickValue - tempPriceRange[0]) < Math.abs(clickValue - tempPriceRange[1])
-                      ? "min"
-                      : "max";
-                }}
+                className="relative h-[3px] bg-gray-200 rounded-full cursor-pointer select-none mt-4"
+                onMouseDown={(e) => startDrag(e)}
+                onTouchStart={(e) => startDrag(e.touches[0])} 
               >
                 {/* Range Highlight */}
                 <div
@@ -506,31 +516,25 @@ const Category = () => {
 
                 {/* Min Thumb */}
                 <div
-                  className="absolute w-1 h-5 bg-black top-1/2 -translate-y-1/2 cursor-pointer"
+                  className="absolute w-1 h-6 bg-black top-1/2 -translate-y-1/2 rounded cursor-pointer"
                   style={{ left: `${(tempPriceRange[0] / MAX_PRICE) * 100}%` }}
-                  onMouseDown={(e) => {
-                    e.stopPropagation();
-                    isDragging.current = true;
-                    activeThumb.current = "min";
-                  }}
+                  onMouseDown={(e) => startThumbDrag(e, "min")}
+                  onTouchStart={(e) => startThumbDrag(e.touches[0], "min")}
                 />
 
                 {/* Max Thumb */}
                 <div
-                  className="absolute w-1 h-5 bg-black top-1/2 -translate-y-1/2 cursor-pointer -ml-1"
+                  className="absolute w-1 h-6 bg-black top-1/2 -translate-y-1/2 rounded cursor-pointer"
                   style={{ left: `${(tempPriceRange[1] / MAX_PRICE) * 100}%` }}
-                  onMouseDown={(e) => {
-                    e.stopPropagation();
-                    isDragging.current = true;
-                    activeThumb.current = "max";
-                  }}
+                  onMouseDown={(e) => startThumbDrag(e, "max")}
+                  onTouchStart={(e) => startThumbDrag(e.touches[0], "max")}
                 />
               </div>
 
               {/* Apply Filter */}
               <button
                 onClick={() => {
-                  setPriceRange(tempPriceRange); // now filter and close
+                  setPriceRange(tempPriceRange);
                   filterProducts(true);
                 }}
                 className="mt-5 w-full px-4 py-2 text-sm bg-black text-white rounded-md hover:bg-gray-900 transition cursor-pointer"

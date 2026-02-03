@@ -12,10 +12,20 @@ const ProductCarousel = ({ products = [] }) => {
   const isAnimatingRef = useRef(false);
   const slideIndexRef = useRef(0);
 
-  const [cardsPerView, setCardsPerView] = useState(6);
   const [slideIndex, setSlideIndex] = useState(0);
   const [dotsCount, setDotsCount] = useState(0);
-  const [scrollStep, setScrollStep] = useState(1);
+  const getInitialSettings = () => {
+    const w = window.innerWidth;
+    if (w >= 1280) return { cardsPerView: 5, scrollStep: 1 };
+    if (w >= 1024) return { cardsPerView: 5, scrollStep: 1 };
+    if (w >= 768) return { cardsPerView: 3, scrollStep: 1 };
+    return { cardsPerView: 2, scrollStep: 2 }; // mobile default
+  };
+
+  const { cardsPerView: initialCards, scrollStep: initialStep } = getInitialSettings();
+
+  const [cardsPerView, setCardsPerView] = useState(initialCards);
+  const [scrollStep, setScrollStep] = useState(initialStep);
 
   // ------------------ 1) UNIQUE BESTSELLERS ------------------
   const bestSellers = useMemo(() => {
@@ -48,6 +58,20 @@ const ProductCarousel = ({ products = [] }) => {
     };
 
     updateBreakpoints();
+    window.addEventListener("resize", updateBreakpoints);
+    return () => window.removeEventListener("resize", updateBreakpoints);
+  }, []);
+  
+  useEffect(() => {
+    const updateBreakpoints = () => {
+      const w = window.innerWidth;
+      if (w >= 1280) { setCardsPerView(5); setScrollStep(1); }
+      else if (w >= 1024) { setCardsPerView(5); setScrollStep(1); }
+      else if (w >= 768) { setCardsPerView(3); setScrollStep(1); }
+      else { setCardsPerView(2); setScrollStep(2); }
+    };
+
+    updateBreakpoints(); // call immediately
     window.addEventListener("resize", updateBreakpoints);
     return () => window.removeEventListener("resize", updateBreakpoints);
   }, []);

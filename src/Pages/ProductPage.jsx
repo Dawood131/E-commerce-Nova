@@ -73,15 +73,12 @@ const ProductPage = () => {
 
   useEffect(() => {
     if (product) {
-      // 1️⃣ Set the default selected size
       if (product.sizes?.length > 0) {
         setSelectedSize(product.sizes[0]);
       }
-
-      // 2️⃣ Scroll to top when product changes
       window.scrollTo({
         top: 0,
-        behavior: "smooth", // optional for smooth scrolling
+        behavior: "smooth",
       });
     }
   }, [product]);
@@ -118,14 +115,14 @@ const ProductPage = () => {
               {images.map((img, i) => (
                 <button
                   key={i}
-                  onClick={() => setActiveIndex(i)} // <-- this updates the main image
+                  onClick={() => setActiveIndex(i)}
                   className="relative rounded-lg overflow-hidden transition-all duration-200"
                 >
                   <img
                     src={img}
                     alt={`thumbnail-${i}`}
                     className={`w-full h-full object-cover aspect-square transition-transform duration-300 hover:scale-105
-          ${i === activeIndex ? "ring-2 ring-yellow-500" : ""}`} // highlight active
+          ${i === activeIndex ? "ring-2 ring-yellow-500" : ""}`}
                   />
                 </button>
               ))}
@@ -288,6 +285,23 @@ const ProductPage = () => {
               <MainBtn text={"ADD TO BAG"} onClick={handleAddToCart} className="w-full font-medium tracking-wide" />
             </NavLink>
 
+            {/* MOBILE DESCRIPTION */}
+            <div className="md:hidden mt-6">
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-2">
+                Product Details
+              </h3>
+              <p className="text-sm text-gray-700 leading-relaxed mb-4">{staticDesc}</p>
+              {keyPoints.length > 0 && (
+                <ul className="space-y-2">
+                  {keyPoints.map((point, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
+                      <span className="w-1.5 h-1.5 mt-2 rounded-full bg-yellow-500 flex-shrink-0" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -302,10 +316,10 @@ const ProductPage = () => {
       )}
 
       {/* YOU MAY ALSO LIKE */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-4 md:py-10 py-2 mb-10">
         <h2 className="text-xl md:text-2xl font-semibold mb-6">You May Also Like</h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {productsData
             .filter(
               (p) =>

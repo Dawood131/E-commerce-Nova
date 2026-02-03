@@ -48,7 +48,7 @@ const Search = () => {
 
       <Header />
       {/* SEARCH SECTION */}
-      <div className="max-w-7xl mx-auto w-full px-4 md:px-10 py-10">
+      <div className="max-w-7xl mx-auto w-full px-4 py-10">
         <h1 className="md:hidden font-semibold text-2xl mb-3 -mt-8">Search</h1>
         {/* Search Bar */}
         <div className="relative w-full flex items-center mb-8">
@@ -66,7 +66,7 @@ const Search = () => {
         </div>
 
         {/* Results Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 md:-mt-3 mt-3">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 md:mt-6 mt-3">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4 md:mb-0">
             {query ? `Showing results for "${query}"` : "Explore Featured Products"}
           </h2>
@@ -75,7 +75,7 @@ const Search = () => {
 
         {/* Products Grid */}
         {results.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-6 mt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-6 mt-6">
             {results.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

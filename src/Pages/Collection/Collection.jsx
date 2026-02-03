@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Layout/Footer";
 import productsData from "../../components/data/products";
-import ProductCard from "../../components/Products/ProductCard";
+import ProductList from "../../components/Products/ProductList";
 import Select from "react-select";
 import { MdOutlineFilterList } from "react-icons/md";
 import { Grid4, Grid3, Grid2, List } from "../../assets/Icons";
@@ -168,33 +168,57 @@ const Collection = () => {
 
     /* -------------------- PRICE DRAG -------------------- */
 
+    const startDrag = (e) => {
+        isDragging.current = true;
+        const rect = sliderRef.current.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        const clickValue = Math.round(percent * MAX_PRICE);
+        activeThumb.current =
+            Math.abs(clickValue - tempPriceRange[0]) < Math.abs(clickValue - tempPriceRange[1])
+                ? "min"
+                : "max";
+    };
+
+    const startThumbDrag = (e, thumb) => {
+        e.stopPropagation();
+        isDragging.current = true;
+        activeThumb.current = thumb;
+    };
+
     useEffect(() => {
         const move = (e) => {
-            if (!isDragging.current || !sliderRef.current) return;
+            if (!isDragging.current) return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const rect = sliderRef.current.getBoundingClientRect();
-            let percent = (e.clientX - rect.left) / rect.width;
-            percent = Math.max(0, Math.min(1, percent));
-            const value = Math.round(percent * MAX_PRICE);
+            let value = Math.round(((clientX - rect.left) / rect.width) * MAX_PRICE);
+            value = Math.max(0, Math.min(MAX_PRICE, value));
 
-            setTempPriceRange((prev) =>
-                activeThumb.current === "min"
-                    ? [Math.min(value, prev[1] - MIN_GAP), prev[1]]
-                    : [prev[0], Math.max(value, prev[0] + MIN_GAP)]
-            );
+            if (activeThumb.current === "min") {
+                if (value > tempPriceRange[1]) value = tempPriceRange[1];
+                setTempPriceRange([value, tempPriceRange[1]]);
+            } else if (activeThumb.current === "max") {
+                if (value < tempPriceRange[0]) value = tempPriceRange[0];
+                setTempPriceRange([tempPriceRange[0], value]);
+            }
         };
 
-        const stop = () => {
+        const end = () => {
             isDragging.current = false;
             activeThumb.current = null;
         };
 
         window.addEventListener("mousemove", move);
-        window.addEventListener("mouseup", stop);
+        window.addEventListener("mouseup", end);
+        window.addEventListener("touchmove", move);
+        window.addEventListener("touchend", end);
+
         return () => {
             window.removeEventListener("mousemove", move);
-            window.removeEventListener("mouseup", stop);
+            window.removeEventListener("mouseup", end);
+            window.removeEventListener("touchmove", move);
+            window.removeEventListener("touchend", end);
         };
-    }, []);
+    }, [tempPriceRange]);
 
     /* -------------------- UI -------------------- */
 
@@ -208,9 +232,12 @@ const Collection = () => {
             </div>
 
             <Header />
-
+            <nav className="container mx-auto px-4 py-3 text-sm text-gray-600 flex flex-wrap items-center gap-1 md:mt-8 mb-2">
+                <NavLink to="/" className="hover:underline">Home</NavLink> &gt;
+                <span className="ml-1 font-semibold">Collection</span>
+            </nav>
             {/* COLLECTION CIRCLES */}
-            <div className="container mx-auto px-2 py-4 flex justify-start md:justify-center gap-4 md:gap-12 overflow-x-auto hide-scrollbar mb-4 md:mt-16">
+            <div className="container mx-auto px-2 py-4 flex justify-center md:justify-center gap-4 -mt-5 mb-4 md:gap-x-10">
                 {circles.map((c) => (
                     <div
                         key={c}
@@ -220,7 +247,7 @@ const Collection = () => {
                         className={`flex flex-col items-center cursor-pointer hover:scale-105 transition font-semibold
             ${c === "All Products" ? "border-b-2 border-black" : "border-b-2 border-transparent"}`}
                     >
-                        <div className="md:w-24 w-20 md:h-24 h-20 rounded-full bg-gray-200 flex items-center justify-center mb-2 overflow-hidden border border-gray-200">
+                        <div className="w-19 md:w-24 h-19 md:h-24 rounded-full bg-gray-200 flex items-center justify-center mb-2 overflow-hidden border border-gray-200">
                             <img src={collectionImages[c]} className="w-full h-full object-contain" />
                         </div>
                         <span className="text-xs md:text-sm text-center font-medium mb-1">{c}</span>
@@ -229,7 +256,7 @@ const Collection = () => {
             </div>
 
             {/* Filter / Sort / View */}
-            <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-start md:items-center mb-7 bg-white z-30 gap-3">
+            <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-start md:items-center mb-7 bg-white gap-3">
 
                 {/* Top Row: Filter (left) + Sort (right) */}
                 <div className="flex w-full justify-between items-center md:justify-start md:gap-4">
@@ -335,24 +362,7 @@ const Collection = () => {
             </div>
 
             {/* Products Grid */}
-            <main className="flex-1 container mx-auto px-4 mb-10 -mt-3 md:mt-0">
-                {loading ? (
-                    <p className="text-center py-12 text-gray-500 text-lg">Loading products...</p>
-                ) : filteredProducts.length === 0 ? (
-                    <p className="text-center text-gray-500 mt-12 text-lg mb-12">No products found in this category.</p>
-                ) : (
-                    <div className={
-                        viewMode === "grid-4" ? "grid grid-cols-2 md:grid-cols-4 gap-4" :
-                            viewMode === "grid-3" ? "grid grid-cols-2 md:grid-cols-3 gap-4" :
-                                viewMode === "grid-2" ? "grid grid-cols-2 gap-4" :
-                                    "grid grid-cols-1 gap-4"
-                    }>
-                        {filteredProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
-                )}
-            </main>
+            <ProductList products={filteredProducts} viewMode={viewMode} />
 
             <Footer />
 
@@ -461,17 +471,9 @@ const Collection = () => {
                             </div>
                             <div
                                 ref={sliderRef}
-                                className="relative h-[3px] bg-gray-200 rounded-full cursor-pointer select-none"
-                                onMouseDown={(e) => {
-                                    isDragging.current = true;
-                                    const rect = sliderRef.current.getBoundingClientRect();
-                                    const percent = (e.clientX - rect.left) / rect.width;
-                                    const clickValue = Math.round(percent * MAX_PRICE);
-                                    activeThumb.current =
-                                        Math.abs(clickValue - tempPriceRange[0]) < Math.abs(clickValue - tempPriceRange[1])
-                                            ? "min"
-                                            : "max";
-                                }}
+                                className="relative h-[3px] bg-gray-200 rounded-full cursor-pointer select-none mt-4"
+                                onMouseDown={(e) => startDrag(e)}
+                                onTouchStart={(e) => startDrag(e.touches[0])} // Touch support
                             >
                                 {/* Range Highlight */}
                                 <div
@@ -484,24 +486,18 @@ const Collection = () => {
 
                                 {/* Min Thumb */}
                                 <div
-                                    className="absolute w-1 h-5 bg-black top-1/2 -translate-y-1/2 cursor-pointer"
+                                    className="absolute w-1 h-6 bg-black top-1/2 -translate-y-1/2 rounded cursor-pointer"
                                     style={{ left: `${(tempPriceRange[0] / MAX_PRICE) * 100}%` }}
-                                    onMouseDown={(e) => {
-                                        e.stopPropagation();
-                                        isDragging.current = true;
-                                        activeThumb.current = "min";
-                                    }}
+                                    onMouseDown={(e) => startThumbDrag(e, "min")}
+                                    onTouchStart={(e) => startThumbDrag(e.touches[0], "min")}
                                 />
 
                                 {/* Max Thumb */}
                                 <div
-                                    className="absolute w-1 h-5 bg-black top-1/2 -translate-y-1/2 cursor-pointer -ml-1"
+                                    className="absolute w-1 h-6 bg-black top-1/2 -translate-y-1/2 rounded cursor-pointer"
                                     style={{ left: `${(tempPriceRange[1] / MAX_PRICE) * 100}%` }}
-                                    onMouseDown={(e) => {
-                                        e.stopPropagation();
-                                        isDragging.current = true;
-                                        activeThumb.current = "max";
-                                    }}
+                                    onMouseDown={(e) => startThumbDrag(e, "max")}
+                                    onTouchStart={(e) => startThumbDrag(e.touches[0], "max")}
                                 />
                             </div>
 
