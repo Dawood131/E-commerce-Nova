@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const TopbarTrackorder = () => {
   const [trackingId, setTrackingId] = useState("");
@@ -16,12 +17,9 @@ const TopbarTrackorder = () => {
 
   const handleTrackClick = () => {
     if (trackingId) {
-      // agar ID available → direct order page
       navigate(`/trackorder/${trackingId}`);
     } else {
-      // agar ID nahi → input prompt ya modal open
-      const userInput = prompt("Enter your tracking ID:");
-      if (userInput) navigate(`/trackorder/${userInput}`);
+      toast.error("No orders found! Please place an order first.");
     }
   };
 
