@@ -13,6 +13,7 @@ import UiModal from './components/Modals/UiModal';
 import Checkout from './Pages/Checkout';
 import Category from './Pages/Collection/Category';
 import Collection from './Pages/Collection/Collection';
+import Analytics from './Analytics';
 import { Toaster } from "sonner";
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
         <div>
             <UiModal />
             <Toaster position="top-right" reverseOrder={false} />
+            <Analytics />
             <Routes>
                 <Route path='/' element={<Home />} />
                 <Route path='/search' element={<Search />} />
