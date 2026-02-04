@@ -76,6 +76,7 @@ const Collection = () => {
     const [filteredSubCategories, setFilteredSubCategories] = useState([]);
     const [selectedAvailability, setSelectedAvailability] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
+    const [baseProducts, setBaseProducts] = useState(productsData);
 
     /* PRICE SLIDER */
     const sliderRef = useRef(null);
@@ -93,6 +94,7 @@ const Collection = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        setBaseProducts(productsData);
         setFilteredProducts(productsData);
         setLoading(false);
     }, []);
@@ -114,7 +116,7 @@ const Collection = () => {
         availability = selectedAvailability,
         autoClose = true
     } = {}) => {
-        let filtered = [...productsData];
+        let filtered = [...baseProducts];
 
         // Category filter
         if (categories.length > 0 && !categories.includes("All Products")) {
@@ -156,15 +158,57 @@ const Collection = () => {
     /* -------------------- SORT -------------------- */
 
     useEffect(() => {
-        let sorted = [...filteredProducts];
-        if (sortBy === "price-asc") sorted.sort((a, b) => a.price - b.price);
-        else if (sortBy === "price-desc") sorted.sort((a, b) => b.price - a.price);
-        else if (sortBy === "newest") sorted.sort((a, b) => b.date - a.date);
-        else if (sortBy === "bestseller")
-            sorted = sorted.filter((p) => p.bestseller);
+        let data = [...baseProducts];
 
-        setFilteredProducts(sorted);
-    }, [sortBy]);
+        // CATEGORY
+        if (filteredCategories.length > 0 && !filteredCategories.includes("All Products")) {
+            data = data.filter((p) => filteredCategories.includes(p.category));
+        }
+
+        // SUBCATEGORY
+        if (filteredSubCategories.length > 0) {
+            data = data.filter((p) => filteredSubCategories.includes(p.subCategory));
+        }
+
+        // SIZE
+        if (selectedSizes.length > 0) {
+            data = data.filter((p) =>
+                p.sizes?.some((s) => selectedSizes.includes(s))
+            );
+        }
+
+        // PRICE
+        data = data.filter(
+            (p) => p.price >= priceRange[0] && p.price <= priceRange[1]
+        );
+
+        // AVAILABILITY
+        if (selectedAvailability.length > 0) {
+            data = data.filter((p) => {
+                if (selectedAvailability.includes("inStock") && p.inStock) return true;
+                if (selectedAvailability.includes("outOfStock") && !p.inStock) return true;
+                return false;
+            });
+        }
+
+        // SORT
+        if (sortBy === "bestseller") {
+            data = data.filter((p) => p.bestseller);
+        }
+        if (sortBy === "price-asc") data.sort((a, b) => a.price - b.price);
+        if (sortBy === "price-desc") data.sort((a, b) => b.price - a.price);
+        if (sortBy === "newest") data.sort((a, b) => b.date - a.date);
+
+        setFilteredProducts(data);
+    }, [
+        baseProducts,
+        sortBy,
+        selectedSizes,
+        filteredCategories,
+        filteredSubCategories,
+        priceRange,
+        selectedAvailability
+    ]);
 
     /* -------------------- PRICE DRAG -------------------- */
 

@@ -40,7 +40,7 @@ const Search = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Mobile Logo */}
-      <div className="md:hidden w-full flex justify-center items-center py-3 bg-white">
+      <div className="md:hidden w-full flex justify-center items-center py-2 bg-white">
         <NavLink to="/">
           <img src="/logo-header.png" alt="Logo" className="h-14 w-auto" />
         </NavLink>

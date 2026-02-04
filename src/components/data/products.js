@@ -538,7 +538,7 @@ export const products = [
     { id: 10, name: "Packable Down Jacket", category: "Men", subCategory: "Winterwear", sizes: ["S", "L", "XL"], price: 110, old_price: 0, bestseller: false, image: ["/products/product_13.png"] },
     { id: 11, name: "Lightweight Quilted Jacket", category: "Men", subCategory: "Winterwear", sizes: ["S", "M", "L"], price: 120, old_price: 0, bestseller: false, image: ["/products/product_14.png"] },
     { id: 12, name: "Thermal Insulated Puffer Jackett", category: "Men", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], price: 150, old_price: 0, bestseller: false, image: ["/products/product_15.png"] },
-    { id: 13, name: "Oversized Winter Puffer Jacket", category: "Men", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], price: 130, old_price: 0, bestseller: false, image: ["/products/product_16.png"] },
+    { id: 13, name: "Oversized Winter Puffer Jacket", category: "Men", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], price: 130, old_price: 0, bestseller: true, image: ["/products/product_16.png"] },
     { id: 14, name: "Men Slim Fit Relaxed Denim Jacket", category: "Men", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], price: 160, old_price: 0, bestseller: false, image: ["/products/product_17.png"] },
     { id: 15, name: "Water-Resistant Softshell Jacket", category: "Men", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], price: 140, old_price: 0, bestseller: false, image: ["/products/product_18.png"] },
     { id: 16, name: "Stand Collar Softshell Jacket", category: "Men", subCategory: "Winterwear", sizes: ["S", "M", "L", "XL"], price: 170, old_price: 0, bestseller: false, image: ["/products/product_19.png"] },

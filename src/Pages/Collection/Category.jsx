@@ -83,6 +83,7 @@ const Category = () => {
   const [filteredSubCategories, setFilteredSubCategories] = useState([]);
   const [selectedAvailability, setSelectedAvailability] = useState([]);
   const [currentSub, setCurrentSub] = useState(sub ? capitalize(sub) : "All Products");
+  const [baseProducts, setBaseProducts] = useState([]);
   const [viewMode, setViewMode] = useState(() => {
     if (typeof window !== "undefined") {
       return window.innerWidth >= 768 ? "grid-4" : "grid-2";
@@ -135,16 +136,21 @@ const Category = () => {
 
   useEffect(() => {
     if (!main) return;
+
     const categoryParam = capitalize(main);
     const subCategoryParam = sub ? capitalize(sub) : "All Products";
 
-    const filtered = productsData.filter(
+    const base = productsData.filter(
       (p) =>
         p.category === categoryParam &&
-        (subCategoryParam === "All Products" ? true : p.subCategory === subCategoryParam)
+        (subCategoryParam === "All Products"
+          ? true
+          : p.subCategory === subCategoryParam)
     );
 
-    setFilteredProducts(filtered);
+    setBaseProducts(base);
+    setFilteredProducts(base);
+    setLoading(false);
 
     const uniqueSubCats = [
       "All Products",
@@ -158,18 +164,80 @@ const Category = () => {
     setLoading(false);
   }, [main, sub]);
 
+  const applyFiltersAndSort = () => {
+    let data = [...baseProducts];
+
+    if (filteredSubCategories.length > 0) {
+      data = data.filter((p) =>
+        filteredSubCategories.includes(p.subCategory)
+      );
+    }
+
+    if (selectedSizes.length > 0) {
+      data = data.filter((p) =>
+        p.sizes.some((s) => selectedSizes.includes(s))
+      );
+    }
+
+    data = data.filter(
+      (p) => p.price >= priceRange[0] && p.price <= priceRange[1]
+    );
+
+    if (sortBy === "bestseller") {
+      data = data.filter((p) => p.bestseller);
+    }
+
+    if (sortBy === "price-asc") data.sort((a, b) => a.price - b.price);
+    if (sortBy === "price-desc") data.sort((a, b) => b.price - a.price);
+    if (sortBy === "newest") data.sort((a, b) => b.date - a.date);
+
+    setFilteredProducts(data);
+  };
+
   useEffect(() => {
-    if (!filteredProducts.length) return;
+    applyFiltersAndSort();
+  }, [
+    baseProducts,
+    sortBy,
+    selectedSizes,
+    filteredSubCategories,
+    priceRange,
+    selectedAvailability
+  ]);
 
-    let sorted = [...filteredProducts];
-    if (sortBy === "price-asc") sorted.sort((a, b) => a.price - b.price);
-    else if (sortBy === "price-desc") sorted.sort((a, b) => b.price - a.price);
-    else if (sortBy === "newest") sorted.sort((a, b) => b.date - a.date);
-    else if (sortBy === "bestseller") sorted = sorted.filter((p) => p.bestseller);
+  useEffect(() => {
+    setSelectedSizes([]);
+    setFilteredSubCategories([]);
+    setSelectedAvailability([]);
+    setPriceRange([MIN_PRICE, MAX_PRICE]);
+    setTempPriceRange([MIN_PRICE, MAX_PRICE]);
+    setSortBy("newest");
+    setCurrentSub(sub ? capitalize(sub) : "All Products");
 
-    setFilteredProducts(sorted);
-  }, [sortBy]);
+    const categoryParam = capitalize(main);
+    const subCategoryParam = sub ? capitalize(sub) : "All Products";
 
+    const base = productsData.filter(
+      (p) =>
+        p.category === categoryParam &&
+        (subCategoryParam === "All Products" ? true : p.subCategory === subCategoryParam)
+    );
+
+    setBaseProducts(base);
+    setFilteredProducts(base);
+    setLoading(false);
+
+    const uniqueSubCats = [
+      "All Products",
+      ...productsData
+        .filter((p) => p.category === categoryParam)
+        .map((p) => p.subCategory)
+        .filter((v, i, a) => a.indexOf(v) === i),
+    ];
+    setSubCategories(uniqueSubCats);
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [main, sub]);
 
   const startDrag = (e) => {
     isDragging.current = true;
@@ -503,7 +571,7 @@ const Category = () => {
                 ref={sliderRef}
                 className="relative h-[3px] bg-gray-200 rounded-full cursor-pointer select-none mt-4"
                 onMouseDown={(e) => startDrag(e)}
-                onTouchStart={(e) => startDrag(e.touches[0])} 
+                onTouchStart={(e) => startDrag(e.touches[0])}
               >
                 {/* Range Highlight */}
                 <div
