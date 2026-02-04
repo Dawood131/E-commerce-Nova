@@ -239,6 +239,19 @@ const Category = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [main, sub]);
 
+  const resetFilters = () => {
+    setSelectedSizes([]);
+    setFilteredSubCategories([]);
+    setSelectedAvailability([]);
+    setPriceRange([MIN_PRICE, MAX_PRICE]);
+    setTempPriceRange([MIN_PRICE, MAX_PRICE]);
+    setSortBy("newest");
+    setCurrentSub(sub ? capitalize(sub) : "All Products")
+    setFilteredProducts(baseProducts);
+    setIsFilterOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const startDrag = (e) => {
     isDragging.current = true;
     const rect = sliderRef.current.getBoundingClientRect();
@@ -460,7 +473,7 @@ const Category = () => {
       </div>
 
       {/* Products Grid */}
-      <ProductList products={filteredProducts} viewMode={viewMode} />
+      <ProductList products={filteredProducts} viewMode={viewMode} resetFilters={resetFilters} />
 
       <Footer />
 

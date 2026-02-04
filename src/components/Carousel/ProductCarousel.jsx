@@ -6,6 +6,71 @@ import Headings from "../Headings/Headings";
 const GAP = 10;
 const AUTO_DELAY = 3000;
 
+// Skeleton
+const ProductCardSkeleton = () => (
+  <div className="w-full animate-pulse">
+    <div className="relative overflow-hidden rounded-xl aspect-[3/4]">
+      <div
+        className="absolute inset-0 rounded-xl"
+        style={{
+          background: "linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%)",
+          backgroundSize: "200% 100%",
+          backgroundPosition: "200% 0",
+          animation: "shimmer 1.5s linear infinite",
+        }}
+      />
+    </div>
+    <div className="mt-2 h-4 w-3/4 rounded bg-gray-200 relative overflow-hidden">
+      <div
+        className="absolute inset-0 rounded"
+        style={{
+          background: "linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%)",
+          backgroundSize: "200% 100%",
+          backgroundPosition: "200% 0",
+          animation: "shimmer 1.5s linear infinite",
+        }}
+      />
+    </div>
+    <div className="mt-1 h-3 w-1/2 rounded bg-gray-200 relative overflow-hidden">
+      <div
+        className="absolute inset-0 rounded"
+        style={{
+          background: "linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%)",
+          backgroundSize: "200% 100%",
+          backgroundPosition: "200% 0",
+          animation: "shimmer 1.5s linear infinite",
+        }}
+      />
+    </div>
+
+    <style>{`
+      @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+    `}</style>
+  </div>
+);
+
+// Product wrapper to handle skeleton + actual product
+const ProductWrapper = ({ product, width }) => {
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  return (
+    <div style={{ width }} className="flex-shrink-0">
+      {!imgLoaded && <ProductCardSkeleton />}
+      <img
+        src={product.image[0]}
+        alt={product.name}
+        className="hidden"
+        onLoad={() => setImgLoaded(true)}
+      />
+      {imgLoaded && <ProductCard product={product} />}
+    </div>
+  );
+};
+
+
 const ProductCarousel = ({ products = [] }) => {
   const trackRef = useRef(null);
   const autoSlideRef = useRef(null);
@@ -61,7 +126,7 @@ const ProductCarousel = ({ products = [] }) => {
     window.addEventListener("resize", updateBreakpoints);
     return () => window.removeEventListener("resize", updateBreakpoints);
   }, []);
-  
+
   useEffect(() => {
     const updateBreakpoints = () => {
       const w = window.innerWidth;
@@ -272,15 +337,11 @@ const ProductCarousel = ({ products = [] }) => {
             style={{ columnGap: GAP, willChange: "transform" }}
           >
             {renderProducts.map((product, i) => (
-              <div
+              <ProductWrapper
                 key={`${product.id}-${i}`}
-                className="flex-shrink-0"
-                style={{
-                  width: `calc((100% - ${(cardsPerView - 1) * GAP}px) / ${cardsPerView})`,
-                }}
-              >
-                <ProductCard product={product} />
-              </div>
+                product={product}
+                width={`calc((100% - ${(cardsPerView - 1) * GAP}px) / ${cardsPerView})`}
+              />
             ))}
           </div>
         </div>

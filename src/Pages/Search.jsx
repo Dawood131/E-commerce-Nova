@@ -7,6 +7,71 @@ import { FiSearch } from "react-icons/fi";
 import { products } from "../components/data/products";
 import MainBtn from "../components/Button/MainBtn";
 
+// Skeleton
+const ProductCardSkeleton = () => (
+  <div className="w-full animate-pulse">
+    <div className="relative overflow-hidden rounded-xl aspect-[3/4]">
+      <div
+        className="absolute inset-0 rounded-xl"
+        style={{
+          background: "linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%)",
+          backgroundSize: "200% 100%",
+          backgroundPosition: "200% 0",
+          animation: "shimmer 1.5s linear infinite",
+        }}
+      />
+    </div>
+    <div className="mt-2 h-4 w-3/4 rounded bg-gray-200 relative overflow-hidden">
+      <div
+        className="absolute inset-0 rounded"
+        style={{
+          background: "linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%)",
+          backgroundSize: "200% 100%",
+          backgroundPosition: "200% 0",
+          animation: "shimmer 1.5s linear infinite",
+        }}
+      />
+    </div>
+    <div className="mt-1 h-3 w-1/2 rounded bg-gray-200 relative overflow-hidden">
+      <div
+        className="absolute inset-0 rounded"
+        style={{
+          background: "linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%)",
+          backgroundSize: "200% 100%",
+          backgroundPosition: "200% 0",
+          animation: "shimmer 1.5s linear infinite",
+        }}
+      />
+    </div>
+
+    <style>{`
+      @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+    `}</style>
+  </div>
+);
+
+// Product wrapper to handle skeleton + actual product
+const ProductWrapper = ({ product }) => {
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  return imgLoaded ? (
+    <ProductCard product={product} />
+  ) : (
+    <div className="relative">
+      <ProductCardSkeleton />
+      <img
+        src={product.image[0]} // assuming image array
+        alt={product.name}
+        className="hidden"
+        onLoad={() => setImgLoaded(true)}
+      />
+    </div>
+  );
+};
+
 const Search = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -39,7 +104,6 @@ const Search = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Mobile Logo */}
       <div className="md:hidden w-full flex justify-center items-center py-2 bg-white">
         <NavLink to="/">
           <img src="/logo-header.png" alt="Logo" className="h-14 w-auto" />
@@ -47,10 +111,10 @@ const Search = () => {
       </div>
 
       <Header />
-      {/* SEARCH SECTION */}
+
       <div className="max-w-7xl mx-auto w-full px-4 py-10">
         <h1 className="md:hidden font-semibold text-2xl mb-3 -mt-8">Search</h1>
-        {/* Search Bar */}
+
         <div className="relative w-full flex items-center mb-8">
           <FiSearch
             size={22}
@@ -65,7 +129,6 @@ const Search = () => {
           />
         </div>
 
-        {/* Results Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 md:mt-6 mt-3">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4 md:mb-0">
             {query ? `Showing results for "${query}"` : "Explore Featured Products"}
@@ -73,11 +136,10 @@ const Search = () => {
           <span className="text-gray-500 text-sm">{results.length} items found</span>
         </div>
 
-        {/* Products Grid */}
         {results.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-2 gap-y-6 mt-6">
             {results.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductWrapper key={product.id} product={product} />
             ))}
           </div>
         ) : (

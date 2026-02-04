@@ -15,6 +15,8 @@ const ProductCard = ({ product, viewMode }) => {
   const [hoverWishlist, setHoverWishlist] = useState(false);
   const [showSizeSelector, setShowSizeSelector] = useState(false);
   const sizeSelectorRef = useRef(null);
+  const [imgLoaded, setImgLoaded] = useState(false);
+
 
   const cartItem = cart.find((item) => item.id === product.id);
   const selectedSize = cartItem?.selectedSize || "";
@@ -80,12 +82,20 @@ const ProductCard = ({ product, viewMode }) => {
             className={`relative w-full overflow-hidden rounded-lg ${viewMode === "list" ? "aspect-[6/5]" : "aspect-[3/4]"
               }`}
           >
-            <img
-              src={image}
-              alt={name}
-              className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
-              loading="eager"
-            />
+            <div className="relative w-full h-full">
+              {!imgLoaded && (
+                <div className="absolute inset-0 animate-shimmer rounded-lg" />
+              )}
+
+              <img
+                src={image}
+                alt={product.name}
+                loading="lazy"
+                onLoad={() => setImgLoaded(true)}
+                className={`w-full h-full object-cover transition-opacity duration-500
+      ${imgLoaded ? "opacity-100" : "opacity-0"}`}
+              />
+            </div>
           </div>
 
         </NavLink>
