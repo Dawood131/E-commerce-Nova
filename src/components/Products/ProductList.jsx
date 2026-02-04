@@ -3,7 +3,7 @@ import { useInView } from "react-intersection-observer";
 import ProductCard from "./ProductCard";
 import { HiOutlineShoppingBag } from "react-icons/hi";
 
-// Skeleton
+//  Skeleton
 const ProductCardSkeleton = ({ viewMode }) => (
   <div className="w-full mb-3 relative overflow-hidden">
     {/* Image */}
@@ -21,7 +21,7 @@ const ProductCardSkeleton = ({ viewMode }) => (
       />
     </div>
 
-    {/* Text content */}
+    {/* Text */}
     <div className="mt-3 space-y-2">
       <div
         className="h-4 w-2/3 rounded"
@@ -52,19 +52,30 @@ const ProductCardSkeleton = ({ viewMode }) => (
   </div>
 );
 
+// 🔄 Loading dots component
+const LoadingDots = () => {
+  const [dots, setDots] = useState("");
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots(prev => (prev.length < 3 ? prev + "." : ""));
+    }, 300);
+    return () => clearInterval(interval);
+  }, []);
+  return <span>Loading products{dots}</span>;
+};
+
 const ProductList = ({ products, viewMode, resetFilters }) => {
   const [visibleCount, setVisibleCount] = useState(8);
   const [loading, setLoading] = useState(false);
   const { ref, inView } = useInView({ threshold: 0.5 });
 
-  // ✅ track which images are loaded
+  // ✅ track images loaded
   const [imagesLoaded, setImagesLoaded] = useState({});
 
   useEffect(() => {
     setVisibleCount(8);
-    // reset images loaded on new products
     const initialLoaded = {};
-    products?.forEach((p) => (initialLoaded[p.id] = false));
+    products?.forEach(p => (initialLoaded[p.id] = false));
     setImagesLoaded(initialLoaded);
   }, [products]);
 
@@ -72,7 +83,7 @@ const ProductList = ({ products, viewMode, resetFilters }) => {
     if (inView && visibleCount < products?.length) {
       setLoading(true);
       const timer = setTimeout(() => {
-        setVisibleCount((prev) => Math.min(prev + 8, products.length));
+        setVisibleCount(prev => Math.min(prev + 8, products.length));
         setLoading(false);
       }, 700);
       return () => clearTimeout(timer);
@@ -80,7 +91,7 @@ const ProductList = ({ products, viewMode, resetFilters }) => {
   }, [inView, visibleCount, products]);
 
   const handleImageLoad = (id) => {
-    setImagesLoaded((prev) => ({ ...prev, [id]: true }));
+    setImagesLoaded(prev => ({ ...prev, [id]: true }));
   };
 
   const gridClass =
@@ -94,16 +105,14 @@ const ProductList = ({ products, viewMode, resetFilters }) => {
 
   return (
     <div className={gridClass}>
-      {/* ❌ No products */}
+      {/* No products */}
       {products && products.length === 0 && (
         <div className="col-span-full flex items-center justify-center py-10 mb-15 px-4">
           <div className="max-w-md w-full text-center animate-fadeIn">
             <div className="w-20 h-20 mx-auto mb-5 flex items-center justify-center rounded-full bg-yellow-50 shadow-inner">
               <HiOutlineShoppingBag className="text-yellow-500 text-4xl" />
             </div>
-            <h2 className="text-2xl font-extrabold text-gray-800 mb-2">
-              No Products Found
-            </h2>
+            <h2 className="text-2xl font-extrabold text-gray-800 mb-2">No Products Found</h2>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
               We couldn’t find any products matching your selection.
             </p>
@@ -117,21 +126,16 @@ const ProductList = ({ products, viewMode, resetFilters }) => {
         </div>
       )}
 
-      {/* ✅ Products or skeleton */}
+      {/* Products or skeleton */}
       {products &&
         products.slice(0, visibleCount).map((product) => {
           const imgLoaded = imagesLoaded[product.id];
           return imgLoaded ? (
-            <ProductCard
-              key={product.id}
-              product={product}
-              viewMode={viewMode}
-            />
+            <ProductCard key={product.id} product={product} viewMode={viewMode} />
           ) : (
-            // show skeleton until image loads
             <div key={product.id}>
               <ProductCardSkeleton viewMode={viewMode} />
-              {/* hidden img to trigger onLoad */}
+              {/* hidden img triggers onLoad */}
               <img
                 src={Array.isArray(product.image) ? product.image[0] : product.image}
                 alt={product.name}
@@ -142,16 +146,16 @@ const ProductList = ({ products, viewMode, resetFilters }) => {
           );
         })}
 
-      {/* ⬇ Infinite loader */}
+      {/* Infinite loader */}
       {products && visibleCount < products.length && (
         <div ref={ref} className="col-span-full flex justify-center items-center py-6">
           <div className="bg-white border border-yellow-400 shadow-md px-6 py-3 rounded-lg text-gray-700 font-medium">
-            Loading...
+            <LoadingDots />
           </div>
         </div>
       )}
 
-      {/* 🛑 End */}
+      {/* No more products */}
       {products && visibleCount >= products.length && (
         <div className="col-span-full flex justify-center items-center py-6">
           <div className="bg-white border border-yellow-400 shadow-md px-6 py-3 rounded-lg text-gray-700 font-medium">
