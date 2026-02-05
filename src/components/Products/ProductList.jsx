@@ -43,12 +43,15 @@ const ProductCardSkeleton = ({ viewMode }) => (
       />
     </div>
 
-    <style jsx>{`
-      @keyframes shimmer {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-      }
-    `}</style>
+    <style>
+      {`
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+`}
+    </style>
+
   </div>
 );
 
@@ -84,11 +87,17 @@ const ProductList = ({ products, viewMode, resetFilters }) => {
     });
   }, [products]);
 
+
   useEffect(() => {
-    if (inView && visibleCount < products?.length) {
-      setVisibleCount((prev) => Math.min(prev + 8, products.length));
+    if (inView && visibleCount < products.length) {
+      setLoading(true);
+      setTimeout(() => {
+        setVisibleCount(prev => Math.min(prev + 8, products.length));
+        setLoading(false);
+      }, 500);
     }
   }, [inView, visibleCount, products]);
+
 
   const handleImageLoad = (id) => {
     setImagesLoaded(prev => ({ ...prev, [id]: true }));
@@ -147,25 +156,25 @@ const ProductList = ({ products, viewMode, resetFilters }) => {
         })}
 
       {/* Infinite loader */}
-      {products &&
-        visibleCount < products.length &&
-        Object.values(imagesLoaded).some((loaded) => !loaded) && (
-          <div ref={ref} className="col-span-full flex justify-center items-center py-6">
+      <div ref={ref} className="h-1 col-span-full" />
+
+      {products ? (
+        visibleCount < products.length ? (
+          <div className="col-span-full flex justify-center items-center py-6">
             <div className="bg-white border border-yellow-400 shadow-md px-6 py-3 rounded-lg text-gray-700 font-medium">
               <LoadingDots />
             </div>
           </div>
-        )}
-
-
-      {/* No more products */}
-      {products && visibleCount >= products.length && (
-        <div className="col-span-full flex justify-center items-center py-6">
-          <div className="bg-white border border-yellow-400 shadow-md px-6 py-3 rounded-lg text-gray-700 font-medium">
-            No More Products
-          </div>
-        </div>
-      )}
+        ) : (
+          visibleCount >= products.length && products.length > 0 && (
+            <div className="col-span-full flex justify-center items-center py-6">
+              <div className="bg-white border border-yellow-400 shadow-md px-6 py-3 rounded-lg text-gray-700 font-medium">
+                No More Products
+              </div>
+            </div>
+          )
+        )
+      ) : null}
     </div>
   );
 };

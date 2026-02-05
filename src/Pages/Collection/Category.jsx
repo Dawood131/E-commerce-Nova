@@ -473,7 +473,12 @@ const Category = () => {
       </div>
 
       {/* Products Grid */}
-      <ProductList products={filteredProducts} viewMode={viewMode} resetFilters={resetFilters} />
+      <ProductList
+        key={currentSub} 
+        products={filteredProducts}
+        viewMode={viewMode}
+        resetFilters={resetFilters}
+      />
 
       <Footer />
 
