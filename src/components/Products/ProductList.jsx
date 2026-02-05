@@ -71,22 +71,22 @@ const ProductList = ({ products, viewMode, resetFilters }) => {
 
   // ✅ track images loaded
   const [imagesLoaded, setImagesLoaded] = useState({});
-
   useEffect(() => {
-    setVisibleCount(8);
-    const initialLoaded = {};
-    products?.forEach(p => (initialLoaded[p.id] = false));
-    setImagesLoaded(initialLoaded);
+    if (!products) return;
+    setImagesLoaded(prev => {
+      const updated = { ...prev };
+      products.forEach(p => {
+        if (!(p.id in updated)) {
+          updated[p.id] = false;
+        }
+      });
+      return updated;
+    });
   }, [products]);
 
   useEffect(() => {
     if (inView && visibleCount < products?.length) {
-      setLoading(true);
-      const timer = setTimeout(() => {
-        setVisibleCount(prev => Math.min(prev + 8, products.length));
-        setLoading(false);
-      }, 700);
-      return () => clearTimeout(timer);
+      setVisibleCount((prev) => Math.min(prev + 8, products.length));
     }
   }, [inView, visibleCount, products]);
 
@@ -98,10 +98,10 @@ const ProductList = ({ products, viewMode, resetFilters }) => {
     viewMode === "grid-4"
       ? "grid grid-cols-2 md:grid-cols-4 gap-3 md:px-13 px-4 mb-10"
       : viewMode === "grid-3"
-      ? "grid grid-cols-2 md:grid-cols-3 gap-3 md:px-13 px-4 mb-10"
-      : viewMode === "grid-2"
-      ? "grid grid-cols-2 gap-3 md:px-13 px-4 mb-10"
-      : "grid grid-cols-1 gap-3 md:px-13 px-4 mb-10";
+        ? "grid grid-cols-2 md:grid-cols-3 gap-3 md:px-13 px-4 mb-10"
+        : viewMode === "grid-2"
+          ? "grid grid-cols-2 gap-3 md:px-13 px-4 mb-10"
+          : "grid grid-cols-1 gap-3 md:px-13 px-4 mb-10";
 
   return (
     <div className={gridClass}>
@@ -147,13 +147,16 @@ const ProductList = ({ products, viewMode, resetFilters }) => {
         })}
 
       {/* Infinite loader */}
-      {products && visibleCount < products.length && (
-        <div ref={ref} className="col-span-full flex justify-center items-center py-6">
-          <div className="bg-white border border-yellow-400 shadow-md px-6 py-3 rounded-lg text-gray-700 font-medium">
-            <LoadingDots />
+      {products &&
+        visibleCount < products.length &&
+        Object.values(imagesLoaded).some((loaded) => !loaded) && (
+          <div ref={ref} className="col-span-full flex justify-center items-center py-6">
+            <div className="bg-white border border-yellow-400 shadow-md px-6 py-3 rounded-lg text-gray-700 font-medium">
+              <LoadingDots />
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
 
       {/* No more products */}
       {products && visibleCount >= products.length && (
