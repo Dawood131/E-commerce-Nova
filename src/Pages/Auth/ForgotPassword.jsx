@@ -21,19 +21,17 @@ const ForgotPassword = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setMessage("");
     if (!validate()) return;
 
-    // LocalStorage sandbox for demo
     const users = JSON.parse(localStorage.getItem("novaUsers")) || [];
     const user = users.find((u) => u.email === email);
 
     if (user) {
-      // For demo, we just show message
-      setMessage("Password reset link sent to your email!");
+      // For demo, show password
+      setMessage(`Your password is: ${user.password}`);
     } else {
       setErrors({ email: "Email not found" });
     }

@@ -23,8 +23,7 @@ const ViewTrackOrder = () => {
 
     setLoading(true);
     const orders = JSON.parse(localStorage.getItem("novaOrders") || "[]");
-    const foundOrder = orders.find((o) => o.id === strCode);
-
+    const foundOrder = orders.find((o) => o.orderId === strCode);
     if (!foundOrder) {
       setError("Order not found. Please check your tracking code.");
       setOrder(null);
@@ -47,23 +46,21 @@ const ViewTrackOrder = () => {
     const currentUser = JSON.parse(localStorage.getItem("novaCurrentUser"));
     if (!currentUser) return;
 
+    // Get last tracking ID
     let latestOrderId = paramTrackingId
       ? paramTrackingId.trim().toUpperCase()
       : localStorage.getItem(`novaLastTrackingId_${currentUser.email}`);
 
-    // Only set if order exists
-    const foundOrder = allOrders.find((o) => o.id === latestOrderId);
+    if (!latestOrderId) return;
+
+    const foundOrder = allOrders.find((o) => o.orderId === latestOrderId);
     if (foundOrder) {
-      setTrackingCode(foundOrder.id);
-      setOrder(null); // fetch only on button click
-      // Set step index from saved status
-      const savedStepIndex = steps.indexOf(foundOrder.status || "Ordered");
-      setCurrentStepIndex(savedStepIndex >= 0 ? savedStepIndex : 0);
-    } else {
-      setTrackingCode("");
+      setTrackingCode(foundOrder.orderId);
+      setOrder(null);
       setCurrentStepIndex(0);
     }
   }, [paramTrackingId]);
+
 
   // Auto-progress steps every 5s until Delivered
   useEffect(() => {
@@ -76,12 +73,11 @@ const ViewTrackOrder = () => {
 
         // Update order status in localStorage every step
         const orders = JSON.parse(localStorage.getItem("novaOrders") || "[]");
-        const orderIndex = orders.findIndex((o) => o.id === order.id);
+        const orderIndex = orders.findIndex((o) => o.orderId === order.orderId);
         if (orderIndex !== -1) {
           orders[orderIndex].status = steps[next];
           localStorage.setItem("novaOrders", JSON.stringify(orders));
         }
-
         return next;
       });
     }, 5000);
@@ -152,11 +148,11 @@ const ViewTrackOrder = () => {
             <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-4">
               <div className="flex justify-between">
                 <span className="font-bold text-gray-700">Order ID:</span>
-                <span className="text-gray-900">{order.id}</span>
+                <span className="text-gray-900">{order.orderId}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-bold text-gray-700">Order Date:</span>
-                <span className="text-gray-900">{formatDate(order.date)}</span>
+                <span className="text-gray-900">{formatDate(order.createdAt)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="font-bold text-gray-700">Current Status:</span>

@@ -83,6 +83,16 @@ const CheckoutPage = () => {
         }
     }, []);
 
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("novaCurrentUser"));
+        if (user) {
+            setForm((prev) => ({
+                ...prev,
+                email: user.email,
+            }));
+        }
+    }, []);
+
     // Validation function
     const validate = () => {
         const newErrors = {};
@@ -129,27 +139,21 @@ const CheckoutPage = () => {
             return;
         }
 
-        if (loggedInUser.email !== form.email) {
-            toast.error("Please use the same email as your signed-in account.");
-            return;
-        }
-
-
         // Generate tracking ID
         const id = uuidv4().slice(0, 8).toUpperCase();
         setTrackingId(id);
 
         // Save order
         const orderData = {
+            orderId: id,
+            userId: loggedInUser.id,
             userEmail: loggedInUser.email,
-            id,
             items: cart,
             total,
-            form,
-            country: selectedCountry?.value,
-            city: selectedCity?.value,
+            shipping: form,
             payment: form.payment,
-            date: new Date().toISOString(),
+            status: "Ordered",
+            createdAt: new Date().toISOString(),
         };
 
         const allOrders = JSON.parse(localStorage.getItem("novaOrders") || "[]");
@@ -162,8 +166,6 @@ const CheckoutPage = () => {
         dispatch(clearCart());
         setShowSuccess(true);
     };
-
-
 
     const countryOptions = countries.map(c => ({ value: c, label: c }));
     const cityOptions = selectedCountry
@@ -325,6 +327,7 @@ const CheckoutPage = () => {
                                 type="email"
                                 placeholder=" "
                                 value={form.email}
+                                readOnly={!!localStorage.getItem("novaCurrentUser")} 
                                 onChange={(e) => {
                                     const email = e.target.value;
                                     setForm({ ...form, email });

@@ -23,24 +23,18 @@ const SignIn = () => {
       if (now - saved.timestamp < 24 * 60 * 60 * 1000) {
         setForm({ email: saved.email, password: saved.password });
       } else {
-        localStorage.removeItem("novaRemember"); // remove expired
+        localStorage.removeItem("novaRemember");
       }
     }
   }, []);
 
-  const mediumPasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
 
   const validate = () => {
     const newErrors = {};
     if (!form.email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(form.email))
       newErrors.email = "Enter a valid email";
-
     if (!form.password) newErrors.password = "Password is required";
-    else if (!mediumPasswordRegex.test(form.password))
-      newErrors.password =
-        "Password must be 8+ chars & include letters/numbers";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -56,33 +50,30 @@ const SignIn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoginError("");
+    setLoginError(""); // reset previous error
     if (!validate()) return;
 
     const users = JSON.parse(localStorage.getItem("novaUsers")) || [];
-    const user = users.find(
-      (u) => u.email === form.email && u.password === form.password
-    );
+    const user = users.find((u) => u.email === form.email);
 
-    if (user) {
+    if (!user) {
+      // User email not found
+      setLoginError("Email not registered. Please Sign Up!");
+    } else if (user.password !== form.password) {
+      // Password mismatch
+      setLoginError("Incorrect password. Try again!");
+    } else {
+      // Successful login
       localStorage.setItem("novaCurrentUser", JSON.stringify(user));
-
-      // Save email/password for 1 day
       localStorage.setItem(
         "novaRemember",
-        JSON.stringify({
-          email: form.email,
-          password: form.password,
-          timestamp: new Date().getTime(),
-        })
+        JSON.stringify({ email: form.email, password: form.password, timestamp: new Date().getTime() })
       );
-
       toast.success(`Welcome back, ${user.name || "User"}!`);
       navigate("/");
-    } else {
-      setLoginError("Invalid email or password");
     }
   };
+
 
   const isFilled = (field) => form[field].length > 0;
 
@@ -110,16 +101,14 @@ const SignIn = () => {
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder=" "
                 required
-                className={`peer w-full border-b-2 text-gray-900 py-2 focus:outline-none focus:border-[#d4af37] ${
-                  errors.email ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`peer w-full border-b-2 text-gray-900 py-2 focus:outline-none focus:border-[#d4af37] ${errors.email ? "border-red-500" : "border-gray-300"
+                  }`}
               />
               <label
-                className={`absolute left-0 text-gray-400 text-sm transition-all font-semibold ${
-                  isFilled("email")
-                    ? "-top-4 text-xs text-[#d4af37] font-semibold"
-                    : "top-2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-3 peer-focus:text-[#d4af37] peer-focus:text-xs"
-                }`}
+                className={`absolute left-0 text-gray-400 text-sm transition-all font-semibold ${isFilled("email")
+                  ? "-top-4 text-xs text-[#d4af37] font-semibold"
+                  : "top-2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-3 peer-focus:text-[#d4af37] peer-focus:text-xs"
+                  }`}
               >
                 Email
               </label>
@@ -133,16 +122,14 @@ const SignIn = () => {
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder=" "
                 required
-                className={`peer w-full border-b-2 text-gray-900 py-2 focus:outline-none focus:border-[#d4af37] ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`peer w-full border-b-2 text-gray-900 py-2 focus:outline-none focus:border-[#d4af37] ${errors.password ? "border-red-500" : "border-gray-300"
+                  }`}
               />
               <label
-                className={`absolute left-0 text-gray-400 text-sm transition-all font-semibold ${
-                  isFilled("password")
-                    ? "-top-3 text-xs text-[#d4af37] font-semibold"
-                    : "top-2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-3 peer-focus:text-[#d4af37] peer-focus:text-xs font-semibold"
-                }`}
+                className={`absolute left-0 text-gray-400 text-sm transition-all font-semibold ${isFilled("password")
+                  ? "-top-3 text-xs text-[#d4af37] font-semibold"
+                  : "top-2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-sm peer-focus:-top-3 peer-focus:text-[#d4af37] peer-focus:text-xs font-semibold"
+                  }`}
               >
                 Password
               </label>
@@ -156,15 +143,19 @@ const SignIn = () => {
               <p className="text-xs text-red-500 mt-1 min-h-[1rem]">{errors.password}</p>
             </div>
 
-            <div className="flex justify-between items-center -mt-4">
-              <p className="md:text-sm text-[12px] text-red-500 min-h-[1rem]">{loginError}</p>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center -mt-4 w-full">
+              <p className="md:text-sm text-[12px] text-red-500 min-h-[1rem] mb-1 md:mb-0 flex-1">
+                {loginError}
+              </p>
               <NavLink
                 to="/forgot-password"
-                className="md:text-sm text-[12px] text-gray-500 hover:text-[#d4af37]"
+                className="text-sm  text-gray-500 hover:text-[#d4af37] self-end md:self-auto"
               >
                 Forgot password?
               </NavLink>
             </div>
+
+
 
             <MainBtn text={"SIGN IN"} className="w-full rounded-md" />
           </form>

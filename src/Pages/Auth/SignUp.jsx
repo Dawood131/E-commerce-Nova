@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import Header from "../../components/Header/Header";
@@ -22,34 +22,38 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirm, setShowConfirm] = useState(true);
   const [signupError, setSignupError] = useState("");
+  const nameRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const confirmRef = useRef();
 
   const mediumPasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
 
   const validate = () => {
     const newErrors = {};
 
-    // Name
     if (!form.name) newErrors.name = "Name is required";
-
-    // Email
     if (!form.email) newErrors.email = "Email is required";
     else if (!/\S+@\S+\.\S+/.test(form.email))
       newErrors.email = "Enter a valid email";
-
-    // Password
     if (!form.password) newErrors.password = "Password is required";
     else if (!mediumPasswordRegex.test(form.password))
       newErrors.password = "Password must be 8+ chars & include letters/numbers";
-
-    // Confirm Password
     if (!form.confirmPassword) newErrors.confirmPassword = "Confirm your password";
     else if (form.confirmPassword !== form.password)
       newErrors.confirmPassword = "Passwords do not match";
 
     setErrors(newErrors);
+
+    if (newErrors.name) nameRef.current.focus();
+    else if (newErrors.email) emailRef.current.focus();
+    else if (newErrors.password) passwordRef.current.focus();
+    else if (newErrors.confirmPassword) confirmRef.current.focus();
+
     return Object.keys(newErrors).length === 0;
   };
-  
+
+
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
       const timer = setTimeout(() => {
@@ -72,7 +76,13 @@ const SignUp = () => {
       return;
     }
 
-    const newUser = { ...form };
+    const newUser = {
+      id: crypto.randomUUID(),
+      name: form.name,
+      email: form.email,
+      password: form.password,
+      createdAt: new Date().toISOString(),
+    };
     users.push(newUser);
     localStorage.setItem("novaUsers", JSON.stringify(users));
     localStorage.setItem("novaCurrentUser", JSON.stringify(newUser));
@@ -106,6 +116,7 @@ const SignUp = () => {
             {/* Name */}
             <div className="relative">
               <input
+                ref={nameRef}
                 type="text"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -124,6 +135,7 @@ const SignUp = () => {
             {/* Email */}
             <div className="relative">
               <input
+                ref={emailRef}
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -142,6 +154,7 @@ const SignUp = () => {
             {/* Password */}
             <div className="relative">
               <input
+                ref={passwordRef}
                 type={showPassword ? "password" : "text"}
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -167,6 +180,7 @@ const SignUp = () => {
             {/* Confirm Password */}
             <div className="relative">
               <input
+                ref={confirmRef}
                 type={!showConfirm ? "text" : "password"}
                 value={form.confirmPassword}
                 onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}

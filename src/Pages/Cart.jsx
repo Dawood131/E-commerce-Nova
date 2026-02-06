@@ -96,7 +96,7 @@ const CartPage = () => {
 
             {/* Right: Text & Button */}
             <div className="w-full md:w-1/2 flex flex-col items-center md:items-start gap-4">
-              <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800">
+              <h1 className="text-[24px] md:text-3xl font-extrabold text-gray-800">
                 Your Cart is Empty
               </h1>
               <p className="text-gray-600 text-center md:text-left text-lg">
