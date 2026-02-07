@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /cart/
+Disallow: /wishlist/
+Disallow: /checkout/
+Disallow: /signin/
+Disallow: /signup/
+Disallow: /forgot-password/
+Disallow: /trackorder/
+Disallow: /search/
+
+Sitemap: https://nova-one-taupe.vercel.app/sitemap.xml

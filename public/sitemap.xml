@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Home -->
+  <url>
+    <loc>https://nova-one-taupe.vercel.app/</loc>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Collection -->
+  <url>
+    <loc>https://nova-one-taupe.vercel.app/collection</loc>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Men category + subcategories -->
+  <url>
+    <loc>https://nova-one-taupe.vercel.app/men/topwear</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nova-one-taupe.vercel.app/men/bottomwear</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nova-one-taupe.vercel.app/men/winterwear</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Women category + subcategories -->
+  <url>
+    <loc>https://nova-one-taupe.vercel.app/women/topwear</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nova-one-taupe.vercel.app/women/bottomwear</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nova-one-taupe.vercel.app/women/winterwear</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Kids category + subcategories -->
+  <url>
+    <loc>https://nova-one-taupe.vercel.app/kids/topwear</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nova-one-taupe.vercel.app/kids/bottomwear</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nova-one-taupe.vercel.app/kids/winterwear</loc>
+    <priority>0.8</priority>
+  </url>
+
+</urlset>
