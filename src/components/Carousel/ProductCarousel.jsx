@@ -69,6 +69,9 @@ const ProductWrapper = ({ product, width }) => {
     </div>
   );
 };
+const BannerSkeleton = () => (
+  <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200" />
+);
 
 
 const ProductCarousel = ({ products = [] }) => {
@@ -91,6 +94,8 @@ const ProductCarousel = ({ products = [] }) => {
 
   const [cardsPerView, setCardsPerView] = useState(initialCards);
   const [scrollStep, setScrollStep] = useState(initialStep);
+  const [bannerLoaded, setBannerLoaded] = useState(false);
+
 
   // ------------------ 1) UNIQUE BESTSELLERS ------------------
   const bestSellers = useMemo(() => {
@@ -297,17 +302,23 @@ const ProductCarousel = ({ products = [] }) => {
       <div className="mb-10">
         <Headings highlight="Best" heading="Sellers" />
       </div>
-      <div className="w-full h-[300px] sm:h-[380px] md:h-[480px] lg:h-[640px]
-            overflow-hidden rounded-2xl mb-12">
+      <div className="relative w-full h-[300px] sm:h-[380px] md:h-[480px] lg:h-[640px]
+overflow-hidden rounded-2xl mb-12">
+
+        {!bannerLoaded && <BannerSkeleton />}
+
         <img
           src="/products/Gemini_Generated_Image_lux0r2lux0r2lux0.webp"
           alt="Best Sellers"
-          className="w-full h-full object-cover object-center"
-          loading="eager"  
-          width={1200}    
+          className={`w-full h-full object-cover object-center transition-opacity duration-700
+      ${bannerLoaded ? "opacity-100" : "opacity-0"}`}
+          loading="eager"
+          width={1200}
           height={640}
+          onLoad={() => setBannerLoaded(true)}
         />
       </div>
+
 
 
       {/* HOVER / TOUCH STOP */}
