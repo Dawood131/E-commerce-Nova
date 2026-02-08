@@ -1,0 +1,118 @@
+
+// nova/                      ← project root
+// │
+// ├── frontend/               ← Frontend React/Vite
+// │   ├── src/
+// │   │
+// │   ├── assets/                     # Images, icons, static assets
+// │   │   └── Icons.jsx               ✅ current
+// │   │
+// │   ├── app/                        # App-level setup (global)
+// │   │   ├── store.js                ✅ current
+// │   │   └── router.jsx              ✅ current
+// │   │
+// │   ├── features/                   # ⭐ Feature-based main code
+// │   │
+// │   │   ├── home/
+// │   │   │   └── pages/Home.jsx      ✅ current
+// │   │
+// │   │   ├── auth/
+// │   │   │   └── pages/
+// │   │   │       ├── SignIn.jsx      ✅ current
+// │   │   │       ├── SignUp.jsx      ✅ current
+// │   │   │       └── ForgotPassword.jsx ✅ current
+// │   │   │
+// │   │   │   └── authService.js      🔮 future (API / backend)
+// │   │
+// │   │   ├── products/
+// │   │   │   ├── components/
+// │   │   │   │   ├── ProductCard.jsx     ✅ current
+// │   │   │   │   ├── ProductList.jsx     ✅ current
+// │   │   │   │   └── ProductCarousel.jsx ✅ current
+// │   │   │   │
+// │   │   │   ├── pages/
+// │   │   │   │   ├── ProductPage.jsx     ✅ current
+// │   │   │   │   ├── Collection.jsx      ✅ current
+// │   │   │   │   ├── Category.jsx        ✅ current
+// │   │   │   │   └── Search.jsx          ✅ current
+// │   │   │   ├── data
+// │   │   │   │   └── products.data.js    ✅ current
+// │   │   │   ├── productsSlice.js        ✅ current  ✅ current (mock data)
+// │   │   │   └── productsService.js      🔮 future (API)
+// │   │
+// │   │   ├── cart/  
+// │   │   │   ├── pages/
+// │   │   │   │   ├── Cart.jsx        ✅ current
+// │   │   │   │   └── Checkout.jsx    ✅ current
+// │   │   │   │
+// │   │   │   ├── cartSlice.js        ✅ current
+// │   │   │   ├── cartDrawerSlice.js  ✅ current
+// │   │   │   └── cartService.js      🔮 future
+// │   │
+// │   │   ├── wishlist/
+// │   │   │   ├── pages/Wishlist.jsx   ✅ current
+// │   │   │   ├── wishlistSlice.js     ✅ current
+// │   │   │   └── wishlistService.js   🔮 future
+// │   │
+// │   │   ├── order/
+// │   │   │   └── pages/TrackOrder.jsx ✅ current
+// │   │
+// │   │   └── admin/                  🔮 future (ADMIN PANEL)
+// │   │       ├── pages/
+// │   │       │   ├── Dashboard.jsx  🔮 future
+// │   │       │   ├── Products.jsx   🔮 future
+// │   │       │   ├── Orders.jsx     🔮 future
+// │   │       │   └── Users.jsx      🔮 future
+// │   │       ├── adminSlice.js      🔮 future
+// │   │       └── adminService.js    🔮 future
+// │   │
+// │   ├── shared/                     # Reusable / global components
+// │   │   ├── layout/
+// │   │   │   ├── Navbar.jsx          ✅ current
+// │   │   │   └── Footer.jsx          ✅ current
+// │   │   │
+// │   │   ├── components/
+// │   │   │   ├── Header.jsx          ✅ current
+// │   │   │   ├── UiModal.jsx         ✅ current
+// │   │   │   ├── Process.jsx         ✅ current
+// │   │   │   └── TopbarTrackorder.jsx ✅ current
+// │   │   │
+// │   │   ├── ui/
+// │   │   │   ├── MainBtn.jsx         ✅ current
+// │   │   │   ├── Headings.jsx        ✅ current
+// │   │   │   └── uiModalSlice.js     ✅ current
+// │   │   │
+// │   │   └── hooks/
+// │   │       └── CartWishlistContext.jsx ✅ current (later remove)
+// │   │
+// │   ├── services/
+// │   │   └── api.js                  🔮 future (Axios / MERN)
+// │   │
+// │   ├── Analytics.js                ✅ current
+// │   ├── App.jsx                     ✅ current (now only <Router />)
+// │   ├── main.jsx                    ✅ current
+// │   └── index.css                   ✅ current
+// │
+// ├── backend/                        🔮 future MERN backend
+// │   ├── server.js                    🔮 Express entry
+// │   ├── config/
+// │   │   └── db.js                   🔮 MongoDB connection
+// │   ├── models/
+// │   │   ├── User.js
+// │   │   ├── Product.js
+// │   │   ├── Cart.js
+// │   │   └── Order.js
+// │   ├── routes/
+// │   │   ├── authRoutes.js
+// │   │   ├── productRoutes.js
+// │   │   ├── cartRoutes.js
+// │   │   ├── wishlistRoutes.js
+// │   │   └── orderRoutes.js
+// │   ├── controllers/
+// │   │   ├── authController.js
+// │   │   ├── productController.js
+// │   │   └── cartController.js
+// │   ├── middleware/
+// │   │   └── authMiddleware.js
+// │   └── utils/
+// │       └── sendEmail.js
