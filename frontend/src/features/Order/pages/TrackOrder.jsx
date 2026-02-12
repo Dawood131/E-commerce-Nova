@@ -91,9 +91,13 @@ const ViewTrackOrder = () => {
     return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
   };
 
-  const total = order
+  const subtotal = order
     ? order.items.reduce((acc, item) => acc + item.price * item.quantity, 0)
     : 0;
+
+  const tax = subtotal * 0.15;
+  const total = subtotal + tax;
+
 
   return (
     <>
@@ -194,28 +198,59 @@ const ViewTrackOrder = () => {
               </div>
             </div>
 
-            {/* Items */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-              <h2 className="text-lg font-bold mb-4 text-gray-800">Order Items</h2>
+            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-6">
 
-              {order.items.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex justify-between py-3 border-b border-b-gray-400 last:border-none"
-                >
-                  <div>
-                    <div className="font-medium text-gray-900">{item.name}</div>
-                    <div className="text-sm text-gray-500">
-                      Quantity: {item.quantity}
+              <h2 className="text-lg font-bold text-gray-800  pb-4">
+                Order Summary
+              </h2>
+
+              {/* Items */}
+              <div className="space-y-4">
+                {order.items.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex justify-between items-center bg-gray-50 hover:bg-gray-100 transition rounded-xl px-4 py-3"
+                  >
+                    <div>
+                      <div className="font-semibold text-gray-900">
+                        {item.name}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Qty: {item.quantity}
+                      </div>
+                    </div>
+
+                    <div className="font-semibold text-gray-800">
+                      ${(item.price * item.quantity).toFixed(2)}
                     </div>
                   </div>
-                  <div className="font-semibold text-gray-800">${item.price}</div>
-                </div>
-              ))}
+                ))}
+              </div>
 
-              <div className="flex justify-between mt-4 font-bold text-lg">
-                <span>Total</span>
-                <span>${total}</span>
+              {/* Price Breakdown */}
+              <div className="border-t border-gray-400 pt-5 space-y-3 text-gray-700">
+
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Tax (15%)</span>
+                  <span>${tax.toFixed(2)}</span>
+                </div>
+
+                {/* Grand Total */}
+                <div className="mt-4">
+                  <div className="flex justify-between items-center bg-yellow-50 border border-yellow-200 rounded-xl px-5 py-4 shadow-sm">
+                    <span className="text-lg font-semibold text-gray-800">
+                      Grand Total
+                    </span>
+                    <span className="text-2xl font-extrabold text-yellow-500">
+                      ${total.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
